@@ -51,6 +51,7 @@ const config = {
         include: [
           path.resolve(__dirname, '../node_modules/react-routing/src'),
           path.resolve(__dirname, '../src'),
+          path.resolve(__dirname, '../node_modules/isomorphic-style-loader/lib'),
         ],
         query: {
           // https://github.com/babel/babel-loader#options
@@ -65,6 +66,7 @@ const config = {
           ],
           plugins: [
             'transform-runtime',
+            'transform-decorators-legacy',
             ...DEBUG ? [] : [
               'transform-react-remove-prop-types',
               'transform-react-constant-elements',
@@ -74,7 +76,7 @@ const config = {
         },
       },
       {
-        test: /\.css/,
+        test: /^((?!node_modules).)*\.css$/,
         loaders: [
           'isomorphic-style-loader',
           `css-loader?${JSON.stringify({
@@ -89,10 +91,18 @@ const config = {
         ],
       },
       {
-        test: /\.scss$/,
+        test: /\.(scss|sass)$/,
         loaders: [
           'isomorphic-style-loader',
-          `css-loader?${JSON.stringify({ sourceMap: DEBUG, minimize: !DEBUG })}`,
+          //`css-loader?${JSON.stringify({ sourceMap: DEBUG, minimize: !DEBUG })}`,
+          `css-loader?${JSON.stringify({
+            sourceMap: DEBUG,
+            // CSS Modules https://github.com/css-modules/css-modules
+            modules: true,
+            localIdentName: DEBUG ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]',
+            // CSS Nano http://cssnano.co/options/
+            minimize: !DEBUG,
+          })}`,
           'postcss-loader?pack=sass',
           'sass-loader',
         ],
@@ -122,10 +132,18 @@ const config = {
       },
     ],
   },
-
+  sassLoader: {
+   includePaths: [
+      path.resolve(__dirname, "../node_modules/"),
+      path.resolve(__dirname, "../node_modules/muicss/lib/sass"),
+      path.resolve(__dirname, "../node_modules/susy/sass"),
+      path.resolve(__dirname, "../node_modules/compass-mixins/lib"),
+      path.resolve(__dirname, "../src/components")
+   ]
+  },
   resolve: {
     root: path.resolve(__dirname, '../src'),
-    modulesDirectories: ['node_modules'],
+    modulesDirectories: ['node_modules','src'],
     extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx', '.json'],
   },
 
@@ -148,8 +166,8 @@ const config = {
     return {
       default: [
         // Transfer @import rule by inlining content, e.g. @import 'normalize.css'
-        // https://github.com/postcss/postcss-import
         require('postcss-import')({ addDependencyTo: bundler }),
+        // https://github.com/postcss/postcss-import
         // W3C variables, e.g. :root { --color: red; } div { background: var(--color); }
         // https://github.com/postcss/postcss-custom-properties
         require('postcss-custom-properties')(),

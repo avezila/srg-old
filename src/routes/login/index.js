@@ -12,7 +12,7 @@ import Login from './Login';
 
 export default {
 
-  path: '/login',
+  path: /^\/login(\/.*)?$/,
 
   action() {
     return <Login />;

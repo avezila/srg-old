@@ -9,15 +9,11 @@
 
 import React, { Component, PropTypes } from 'react';
 import emptyFunction from 'fbjs/lib/emptyFunction';
-import s from './App.sass';
+import s from './App.css';
 import Header from '../Header';
+import Feedback from '../Feedback';
+import Footer from '../Footer';
 import { Provider } from 'react-redux';
-//import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-//import injectTapEventPlugin from 'react-tap-event-plugin';
-
-// Needed for onTouchTap
-// http://stackoverflow.com/a/34015469/988941
-//injectTapEventPlugin();
 
 class App extends Component {
 
@@ -64,9 +60,11 @@ class App extends Component {
     const store = this.props.context.store;
     return (
       <Provider store={store}>
-        <div className={s.root}>
+        <div>
           <Header />
           {this.props.children}
+          <Feedback />
+          <Footer />
         </div>
       </Provider>
     );

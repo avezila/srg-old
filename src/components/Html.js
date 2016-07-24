@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { analytics } from '../config';
 
 function Html({ title, description, style, script, children, state }) {
   return (
@@ -11,6 +10,8 @@ function Html({ title, description, style, script, children, state }) {
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic' rel='stylesheet' type='text/css' />
+        <link href="//cdn.muicss.com/mui-0.6.8/css/mui.min.css" rel="stylesheet" type="text/css" media="screen" />
         <style id="css" dangerouslySetInnerHTML={{ __html: style }} />
       </head>
       <body>
@@ -22,16 +23,6 @@ function Html({ title, description, style, script, children, state }) {
             data-initial-state={JSON.stringify(state)}
           />
         )}
-        {analytics.google.trackingId &&
-          <script
-            dangerouslySetInnerHTML={{ __html:
-            'window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;' +
-            `ga('create','${analytics.google.trackingId}','auto');ga('send','pageview')` }}
-          />
-        }
-        {analytics.google.trackingId &&
-          <script src="https://www.google-analytics.com/analytics.js" async defer />
-        }
       </body>
     </html>
   );
