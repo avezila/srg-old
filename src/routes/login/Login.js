@@ -14,6 +14,7 @@ import LoginForm from '../../components/Form/Login'
 import {Panel} from 'muicss/react'
 import s from './Login.sass';
 
+
 const title = 'Login';
 
 @withStyles(s)
@@ -26,9 +27,7 @@ class Login extends Component  {
   render () {
     this.context.setTitle(title);
     return (
-      <Panel className={s.root}>
-        <LoginForm />
-      </Panel>
+      <LoginForm />
     );
   }
 }

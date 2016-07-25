@@ -91,7 +91,7 @@ const config = {
         ],
       },
       {
-        test: /\.(scss|sass)$/,
+        test: /^((?!node_modules).)*\.(scss|sass)$/,
         loaders: [
           'isomorphic-style-loader',
           //`css-loader?${JSON.stringify({ sourceMap: DEBUG, minimize: !DEBUG })}`,
@@ -102,9 +102,30 @@ const config = {
             localIdentName: DEBUG ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]',
             // CSS Nano http://cssnano.co/options/
             minimize: !DEBUG,
+            importLoaders:1,
           })}`,
           'postcss-loader?pack=sass',
           'sass-loader',
+         // 'toolbox',
+        ],
+      },
+      {
+        test: /.*node_modules.*\.(scss|sass)$/,
+        include: [/^\.\/node_modules\/*/,/react-toolbox/],
+        loaders: [
+          'isomorphic-style-loader',
+          //`css-loader?${JSON.stringify({ sourceMap: DEBUG, minimize: !DEBUG })}`,
+          `css-loader?${JSON.stringify({
+            sourceMap: DEBUG,
+            // CSS Modules https://github.com/css-modules/css-modules
+            modules: true,
+            localIdentName: DEBUG ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]',
+            // CSS Nano http://cssnano.co/options/
+            minimize: !DEBUG,
+            importLoaders:1,
+          })}`,
+          'postcss-loader?pack=sass',
+          'sass-loader'
         ],
       },
       {
@@ -133,8 +154,10 @@ const config = {
     ],
   },
   sassLoader: {
+    data: '@import "var";',
    includePaths: [
       path.resolve(__dirname, "../node_modules/"),
+      path.resolve(__dirname, "../node_modules/react-toolbox/lib"),
       path.resolve(__dirname, "../node_modules/muicss/lib/sass"),
       path.resolve(__dirname, "../node_modules/susy/sass"),
       path.resolve(__dirname, "../node_modules/compass-mixins/lib"),
@@ -142,9 +165,10 @@ const config = {
    ]
   },
   resolve: {
-    root: path.resolve(__dirname, '../src'),
-    modulesDirectories: ['node_modules','src'],
-    extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx', '.json'],
+    root: [path.resolve(__dirname, '../src'),path.resolve(__dirname, 'node_modules')],
+    modulesDirectories: ['node_modules','src'],//[path.resolve(__dirname, '../src'),path.resolve(__dirname, 'node_modules')],
+    modules: [path.resolve(__dirname, '../src'),path.resolve(__dirname, 'node_modules')],
+    extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx', '.json','.sass','.scss','.css'],
   },
 
   cache: DEBUG,
