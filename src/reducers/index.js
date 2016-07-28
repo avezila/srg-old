@@ -1,6 +1,1 @@
-import { combineReducers } from 'redux';
-import runtime from './runtime';
-
-export default combineReducers({
-  runtime,
-});
+export api from './api'

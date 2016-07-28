@@ -1,15 +1,21 @@
+sudo: false
 language: node_js
 node_js:
-  - '6'
-  - '5'
-env:
-  - CXX=g++-4.8
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
+  - "6"
+
+cache:
+  directories:
+    - node_modules
+
+install:
+  - npm install
+
 script:
   - npm run lint
   - npm run test
+  - NODE_ENV=development npm run deploy
+  - NODE_ENV=staging npm run deploy
+  - NODE_ENV=production npm run deploy
+
+after_success:
+  - npm run codecov

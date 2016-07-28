@@ -1,218 +1,307 @@
-## React Starter Kit — "[isomorphic](http://nerds.airbnb.com/isomorphic-javascript-future-web-apps/)" web app boilerplate
+# React Redux Starter Kit
 
-> [React Starter Kit](https://www.reactstarterkit.com) is an opinionated
-> boilerplate for web development built on top of [Node.js](https://nodejs.org/),
-> [Express](http://expressjs.com/), [GraphQL](http://graphql.org/) and
-> [React](https://facebook.github.io/react/), containing modern web development
-> tools such as [Webpack](http://webpack.github.io/), [Babel](http://babeljs.io/)
-> and [Browsersync](http://www.browsersync.io/). Helping you to stay productive
-> following the best practices. A solid starting point for both professionals
-> and newcomers to the industry.
+[![Join the chat at https://gitter.im/davezuko/react-redux-starter-kit](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/davezuko/react-redux-starter-kit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/davezuko/react-redux-starter-kit.svg?branch=master)](https://travis-ci.org/davezuko/react-redux-starter-kit?branch=master)
+[![dependencies](https://david-dm.org/davezuko/react-redux-starter-kit.svg)](https://david-dm.org/davezuko/react-redux-starter-kit)
+[![devDependency Status](https://david-dm.org/davezuko/react-redux-starter-kit/dev-status.svg)](https://david-dm.org/davezuko/react-redux-starter-kit#info=devDependencies)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-**See** [getting started](./docs/getting-started.md) guide,
-[demo](http://demo.reactstarterkit.com), [docs](https://github.com/kriasoft/react-starter-kit/tree/master/docs),
-[to-do list](https://waffle.io/kriasoft/react-starter-kit) &nbsp;|&nbsp;
-**Join** [#react-starter-kit](https://gitter.im/kriasoft/react-starter-kit) chat room to stay up to date &nbsp;|&nbsp;
-**Visit our sponsors**:<br><br>
+This starter kit is designed to get you up and running with a bunch of awesome new front-end technologies, all on top of a configurable, feature-rich webpack build system that's already setup to provide hot reloading, CSS modules with Sass support, unit testing, code coverage reports, bundle splitting, and a whole lot more.
 
-[![Rollbar - Full-stack error tracking for all apps in any language](https://dl.dropboxusercontent.com/u/16006521/react-starter-kit/rollbar.png)](https://rollbar.com/?utm_source=reactstartkit(github)&utm_medium=link&utm_campaign=reactstartkit(github)) &nbsp;&nbsp;
-[![Localize - Translate your web app in minutes](https://dl.dropboxusercontent.com/u/16006521/react-starter-kit/localize.png)](https://localizejs.com/?cid=802&utm_source=rsk)
+The primary goal of this project is to remain as **unopinionated** as possible. Its purpose is not to dictate your project structure or to demonstrate a complete sample application, but to provide a set of tools intended to make front-end development robust, easy, and, most importantly, fun. Check out the full feature list below!
+
+Finally, This project wouldn't be possible without the help of our many contributors, so [thank you](#thank-you) for all of your help.
+
+## Table of Contents
+1. [Features](#features)
+1. [Requirements](#requirements)
+1. [Getting Started](#getting-started)
+1. [Application Structure](#application-structure)
+1. [Development](#development)
+  1. [Developer Tools](#developer-tools)
+  1. [Routing](#routing)
+1. [Testing](#testing)
+1. [Deployment](#deployment)
+1. [Build System](#build-system)
+  1. [Configuration](#configuration)
+  1. [Root Resolve](#root-resolve)
+  1. [Globals](#globals)
+  1. [Styles](#styles)
+  1. [Server](#server)
+  1. [Production Optimization](#production-optimization)
+1. [Learning Resources](#learning-resources)
+1. [FAQ](#troubleshooting)
+1. [Thank You](#thank-you)
+
+## Features
+* [react](https://github.com/facebook/react)
+* [redux](https://github.com/rackt/redux)
+* [react-router](https://github.com/rackt/react-router)
+* [react-router-redux](https://github.com/rackt/react-router-redux)
+* [webpack](https://github.com/webpack/webpack)
+* [babel](https://github.com/babel/babel)
+* [koa](https://github.com/koajs/koa)
+* [karma](https://github.com/karma-runner/karma)
+* [eslint](http://eslint.org)
+
+## Requirements
+* node `^4.2.0`
+* npm `^3.0.0`
+
+## Getting Started
+
+After confirming that your development environment meets the specified [requirements](#requirements), you can create a new project based on `react-redux-starter-kit` in one of two ways:
+
+### Install from source
+
+First, clone or download:
+
+```bash
+$ git clone https://github.com/davezuko/react-redux-starter-kit.git
+// or
+$ wget -O react-redux-starter-kit.zip https://github.com/davezuko/react-redux-starter-kit/archive/master.zip
+$ unzip react-redux-starter-kit.zip
+```
+
+Then, rename to your project name and change into the directory:
+
+```bash
+$ mv react-redux-starter-kit <my-project-name>
+$ cd <my-project-name>
+```
+
+### Alternatively, install via `redux-cli`
+
+If not already installed (globally):
+
+```bash
+$ npm i redux-cli -g
+```
+
+Then, create a new project:
+
+```bash
+$ redux new <my-project-name>
+$ cd <my-project-name>
+```
+
+### Install dependencies, and check to see it works
+
+```bash
+$ npm install                   # Install project dependencies
+$ npm start                     # Compile and launch
+```
+If everything works, you should see the following:
+
+<img src="http://i.imgur.com/zR7VRG6.png?2" />
+
+While developing, you will probably rely mostly on `npm start`; however, there are additional scripts at your disposal:
+
+|`npm run <script>`|Description|
+|------------------|-----------|
+|`start`|Serves your app at `localhost:3000`. HMR will be enabled in development.|
+|`compile`|Compiles the application to disk (`~/dist` by default).|
+|`dev`|Same as `npm start`, but enables nodemon for the server as well.|
+|`dev:no-debug`|Same as `npm run dev` but disables devtool instrumentation.|
+|`test`|Runs unit tests with Karma and generates a coverage report.|
+|`test:dev`|Runs Karma and watches for changes to re-run tests; does not generate coverage reports.|
+|`deploy`|Runs linter, tests, and then, on success, compiles your application to disk.|
+|`deploy:dev`|Same as `deploy` but overrides `NODE_ENV` to "development".|
+|`deploy:prod`|Same as `deploy` but overrides `NODE_ENV` to "production".|
+|`lint`|Lint all `.js` files.|
+|`lint:fix`|Lint and fix all `.js` files. [Read more on this](http://eslint.org/docs/user-guide/command-line-interface.html#fix).|
+
+## Application Structure
+
+The application structure presented in this boilerplate is **fractal**, where functionality is grouped primarily by feature rather than file type. Please note, however, that this structure is only meant to serve as a guide, it is by no means prescriptive. That said, it aims to represent generally accepted guidelines and patterns for building scalable applications. If you wish to read more about this pattern, please check out this [awesome writeup](https://github.com/davezuko/react-redux-starter-kit/wiki/Fractal-Project-Structure) by [Justin Greenberg](https://github.com/justingreenberg).
+
+```
+.
+├── bin                      # Build/Start scripts
+├── blueprints               # Blueprint files for redux-cli
+├── build                    # All build-related configuration
+│   └── webpack              # Environment-specific configuration files for webpack
+├── config                   # Project configuration settings
+├── server                   # Koa application (uses webpack middleware)
+│   └── main.js              # Server application entry point
+├── src                      # Application source code
+│   ├── index.html           # Main HTML page container for app
+│   ├── main.js              # Application bootstrap and rendering
+│   ├── components           # Reusable Presentational Components
+│   ├── containers           # Reusable Container Components
+│   ├── layouts              # Components that dictate major page structure
+│   ├── redux                # "Ducks" location...
+│   │   └── modules          # reducer, action, creators not part of a route
+│   ├── routes               # Main route definitions and async split points
+│   │   ├── index.js         # Bootstrap main application routes with store
+│   │   └── Home             # Fractal route
+│   │       ├── index.js     # Route definitions and async split points
+│   │       ├── assets       # Assets required to render components
+│   │       ├── components   # Presentational React Components
+│   │       ├── container    # Connect components to actions and store
+│   │       ├── modules      # Collections of reducers/constants/actions
+│   │       └── routes **    # Fractal sub-routes (** optional)
+│   ├── static               # Static assets (not imported anywhere in source code)
+│   ├── store                # Redux-specific pieces
+│   │   ├── createStore.js   # Create and instrument redux store
+│   │   └── reducers.js      # Reducer registry and injection
+│   └── styles               # Application-wide styles (generally settings)
+└── tests                    # Unit tests
+```
+
+## Development
+
+#### Developer Tools
+
+**We recommend using the [Redux DevTools Chrome Extension](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd).**
+Using the chrome extension allows your monitors to run on a separate thread and affords better performance and functionality. It comes with several of the most popular monitors, is easy to configure, filters actions, and doesn’t require installing any packages.
+
+However, adding the DevTools components to your project is simple. First, grab the packages from npm:
+
+```bash
+npm i --save-dev redux-devtools redux-devtools-log-monitor redux-devtools-dock-monitor
+```
+
+Then follow the [manual integration walkthrough](https://github.com/gaearon/redux-devtools/blob/master/docs/Walkthrough.md).
+
+#### `redux-cli`
+
+```bash
+npm install redux-cli --save-dev
+```
+
+### Routing
+We use `react-router` [route definitions](https://github.com/reactjs/react-router/blob/master/docs/API.md#plainroute) (`<route>/index.js`) to define units of logic within our application. See the [application structure](#application-structure) section for more information.
+
+## Testing
+To add a unit test, simply create a `.spec.js` file anywhere in `~/tests`. Karma will pick up on these files automatically, and Mocha and Chai will be available within your test without the need to import them. If you are using `redux-cli`, test files should automatically be generated when you create a component or redux module.
+
+Coverage reports will be compiled to `~/coverage` by default. If you wish to change what reporters are used and where reports are compiled, you can do so by modifying `coverage_reporters` in `~/config/index.js`.
+
+## Deployment
+Out of the box, this starter kit is deployable by serving the `~/dist` folder generated by `npm run deploy` (make sure to specify your target `NODE_ENV` as well). This project does not concern itself with the details of server-side rendering or API structure, since that demands an opinionated structure that makes it difficult to extend the starter kit. However, if you do need help with more advanced deployment strategies, here are a few tips:
+
+### Static Deployments
+If you are serving the application via a web server such as nginx, make sure to direct incoming routes to the root `~/dist/index.html` file and let react-router take care of the rest. If you are unsure of how to do this, you might find [this documentation](https://github.com/reactjs/react-router/blob/master/docs/guides/Histories.md#configuring-your-server) helpful. The Koa server that comes with the starter kit is able to be extended to serve as an API or whatever else you need, but that's entirely up to you.
+
+### Heroku
+
+Heroku has `nodejs buildpack` script that does the following when you deploy your app to Heroku.
+1. Find `packages.json` in the root directory.
+2. Install `nodejs` and `npm` packages.
+3. Run `npm postinstall script`
+4. Run `npm start`
+
+Therefore, you need to modify `package.json` before deploying to Heroku. Make the following changes in the `scripts` section of `package.json`.
+
+```
+...
+"start": "better-npm-run start:prod",
+"serve": "better-npm-run start",
+"postinstall": "npm run deploy:prod",
+"betterScripts": {
+  ...
+  "start:prod": {
+    "command": "babel-node bin/server",
+    "env": {
+      "NODE_ENV": "production"
+    }
+  }
+  ...
+},
+```
+
+It's also important to tell Heroku to install all `devDependencies` to successfully compile your app on Heroku's environment. Run the following in your terminal.
+
+```bash
+$ heroku config:set NPM_CONFIG_PRODUCTION=false
+```
+
+With this setup, you will install all the necessray packages, build your app, and start the webserver (e.g. koa) everytime you push your app to Heroku. Try to deploy to Heroku by running the following commands.
+
+```bash
+$ git add .
+$ git commit -m 'My awesome commit'
+$ git push heroku master
+```
+
+If you fail to deploy for an unknown reason, try [this helpful comment](https://github.com/davezuko/react-redux-starter-kit/issues/730#issuecomment-213997120) by [DonHansDampf](https://github.com/DonHansDampf) addressing Heroku deployments.
+
+Have more questions? Feel free to submit an issue or join the Gitter chat!
+
+## Build System
+
+### Configuration
+
+Default project configuration can be found in `~/config/index.js`. Here you'll be able to redefine your `src` and `dist` directories, adjust compilation settings, tweak your vendor dependencies, and more. For the most part, you should be able to make changes in here **without ever having to touch the actual webpack build configuration**.
+
+If you need environment-specific overrides (useful for dynamically setting API endpoints, for example), you can edit `~/config/environments.js` and define overrides on a per-NODE_ENV basis. There are examples for both `development` and `production`, so use those as guidelines. Here are some common configuration options:
+
+|Key|Description|
+|---|-----------|
+|`dir_src`|application source code base path|
+|`dir_dist`|path to build compiled application to|
+|`server_host`|hostname for the Koa server|
+|`server_port`|port for the Koa server|
+|`compiler_css_modules`|whether or not to enable CSS modules|
+|`compiler_devtool`|what type of source-maps to generate (set to `false`/`null` to disable)|
+|`compiler_vendor`|packages to separate into to the vendor bundle|
 
 
-### Getting Started
+### Root Resolve
+Webpack is configured to make use of [resolve.root](http://webpack.github.io/docs/configuration.html#resolve-root), which lets you import local packages as if you were traversing from the root of your `~/src` directory. Here's an example:
 
-  * Follow the [getting started guide](./docs/getting-started.md) to download and run the project
-  * Check the [code recipes](./docs/recipes) used in this boilerplate, or share yours
+```js
+// current file: ~/src/views/some/nested/View.js
+// What used to be this:
+import SomeComponent from '../../../components/SomeComponent'
 
+// Can now be this:
+import SomeComponent from 'components/SomeComponent' // Hooray!
+```
 
-### Customization
+### Globals
 
-The `master` branch of React Starter Kit doesn't include a Flux implementation or any other
-advanced integrations. Nevertheless, we have some integrations available to you in *feature*
-branches that you can use either as a reference or merge into your project:
+These are global variables available to you anywhere in your source code. If you wish to modify them, they can be found as the `globals` key in `~/config/index.js`. When adding new globals, make sure you also add them to `~/.eslintrc`.
 
-  * [feature/redux](https://github.com/kriasoft/react-starter-kit/tree/feature/redux) — isomorphic
-    Redux by [Pavel Lang](https://github.com/langpavel) (see [how to integrate
-    Redux](./docs/recipes/how-to-integrate-redux.md))
-  * [feature/react-intl](https://github.com/kriasoft/react-starter-kit/tree/feature/react-intl) —
-    isomorphic Redux and React Intl by [Pavel Lang](https://github.com/langpavel) (see [how
-    to integrate React Intl](./docs/recipes/how-to-integrate-react-intl.md))
+|Variable|Description|
+|---|---|
+|`process.env.NODE_ENV`|the active `NODE_ENV` when the build started|
+|`__DEV__`|True when `process.env.NODE_ENV` is `development`|
+|`__PROD__`|True when `process.env.NODE_ENV` is `production`|
+|`__TEST__`|True when `process.env.NODE_ENV` is `test`|
+|`__DEBUG__`|True when `process.env.NODE_ENV` is `development` and cli arg `--no_debug` is not set (`npm run dev:no-debug`)|
+|`__BASENAME__`|[history basename option](https://github.com/rackt/history/blob/master/docs/BasenameSupport.md)|
 
-If you think that any of these features should be on `master`, or vice versa, some features should
-removed from the `master` branch, please [let us know](https://gitter.im/kriasoft/react-starter-kit).
-We love your feedback!
+### Styles
 
+Both `.scss` and `.css` file extensions are supported out of the box and are configured to use [CSS Modules](https://github.com/css-modules/css-modules). After being imported, styles will be processed with [PostCSS](https://github.com/postcss/postcss) for minification and autoprefixing, and will be extracted to a `.css` file during production builds.
 
-### Comparison
+### Server
 
-<table width="100%">
-  <tr>
-    <th>&nbsp;</th>
-    <th>
-      <p>React Starter Kit</p>
-      <a href="https://github.com/kriasoft/react-starter-kit"><img src="https://img.shields.io/github/stars/kriasoft/react-starter-kit.svg?style=social&label=~react-starter-kit" height="20"></a>
-      <a href="https://twitter.com/ReactStarter"><img src="https://img.shields.io/twitter/follow/ReactStarter.svg?style=social&label=@ReactStarter" height="20"></a>
-    </th>
-    <th>
-      <p>React Static Boilerplate</p>
-      <a href="https://github.com/kriasoft/react-static-boilerplate"><img src="https://img.shields.io/github/stars/kriasoft/react-static-boilerplate.svg?style=social&label=~react-static-boilerplate" height="20"></a>
-      <a href="https://twitter.com/ReactStatic"><img src="https://img.shields.io/twitter/follow/ReactStatic.svg?style=social&label=@ReactStatic" height="20"></a>
-    </th>
-    <th>
-      <p>ASP.NET Core Starter Kit</p>
-      <a href="https://github.com/kriasoft/aspnet-starter-kit"><img src="https://img.shields.io/github/stars/kriasoft/aspnet-starter-kit.svg?style=social&label=~aspnet-starter-kit" height="20"></a>
-      <a href="https://twitter.com/dotnetreact"><img src="https://img.shields.io/twitter/follow/dotnetreact.svg?style=social&label=@dotnetreact" height="20"></a>
-    </th>
-  <tr>
-  <tr>
-    <th align="right">App type</th>
-    <td align="center"><a href="http://nerds.airbnb.com/isomorphic-javascript-future-web-apps/">Isomorphic</a> (universal)</td>
-    <td align="center"><a href="https://en.wikipedia.org/wiki/Single-page_application">Single-page application</a></td>
-    <td align="center"><a href="https://en.wikipedia.org/wiki/Single-page_application">Single-page application</a></td>
-  </tr>
-  <tr>
-    <th colspan="4">Frontend</th>
-  <tr>
-  <tr>
-    <th align="right">Language</th>
-    <td align="center">JavaScript (ES2015+, JSX)</td>
-    <td align="center">JavaScript (ES2015+, JSX)</td>
-    <td align="center">JavaScript (ES2015+, JSX)</td>
-  </tr>
-  <tr>
-    <th align="right">Libraries</th>
-    <td align="center">
-      <a href="https://github.com/facebook/react">React</a>,
-      <a href="https://github.com/ReactJSTraining/history">History</a>,
-      <a href="https://github.com/kriasoft/universal-router">Universal Router</a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/facebook/react">React</a>,
-      <a href="https://github.com/ReactJSTraining/history">History</a>,
-      <a href="https://github.com/reactjs/redux">Redux</a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/facebook/react">React</a>,
-      <a href="https://github.com/ReactJSTraining/history">History</a>,
-      <a href="https://github.com/reactjs/redux">Redux</a>
-    </td>
-  </tr>
-  <tr>
-    <th align="right">Routes</th>
-    <td align="center">Imperative (functional)</td>
-    <td align="center">Declarative</td>
-    <td align="center">Declarative, cross-stack</td>
-  </tr>
-  <tr>
-    <th colspan="4">Backend</th>
-  <tr>
-  <tr>
-    <th align="right">Language</th>
-    <td align="center">JavaScript (ES2015+, JSX)</td>
-    <td align="center">n/a</td>
-    <td align="center">C#, F#</td>
-  </tr>
-  <tr>
-    <th align="right">Libraries</th>
-    <td align="center">
-      <a href="https://nodejs.org">Node.js</a>,
-      <a href="http://expressjs.com/">Express</a>,
-      <a href="http://docs.sequelizejs.com/en/latest/">Sequelize</a>,<br>
-      <a href="https://github.com/graphql/graphql-js">GraphQL</a></td>
-    <td align="center">n/a</td>
-    <td align="center">
-      <a href="https://docs.asp.net/en/latest/">ASP.NET Core</a>,
-      <a href="https://ef.readthedocs.io/en/latest/">EF Core</a>,<br>
-      <a href="https://docs.asp.net/en/latest/security/authentication/identity.html">ASP.NET Identity</a>
-    </td>
-  </tr>
-  <tr>
-    <th align="right"><a href="https://www.quora.com/What-are-the-tradeoffs-of-client-side-rendering-vs-server-side-rendering">SSR</a></th>
-    <td align="center">Yes</td>
-    <td align="center">n/a</td>
-    <td align="center">n/a</td>
-  </tr>
-  <tr>
-    <th align="right">Data API</th>
-    <td align="center"><a href="http://graphql.org/">GraphQL</a></td>
-    <td align="center">n/a</td>
-    <td align="center"><a href="https://docs.asp.net/en/latest/tutorials/first-web-api.html">Web API</a></td>
-  </tr>
-</table>
+This starter kit comes packaged with an Koa server. It's important to note that the sole purpose of this server is to provide `webpack-dev-middleware` and `webpack-hot-middleware` for hot module replacement. Using a custom Koa app in place of [webpack-dev-server](https://github.com/webpack/webpack-dev-server) makes it easier to extend the starter kit to include functionality such as API's, universal rendering, and more -- all without bloating the base boilerplate.
 
+### Production Optimization
 
-### Backers
+Babel is configured to use [babel-plugin-transform-runtime](https://www.npmjs.com/package/babel-plugin-transform-runtime) so transforms aren't inlined. Additionally, in production, we use [react-optimize](https://github.com/thejameskyle/babel-react-optimize) to further optimize your React code.
 
-♥ React Starter Kit? Help us keep it alive by donating funds to cover project
-expenses via [OpenCollective](https://opencollective.com/react-starter-kit) or
-[Bountysource](https://salt.bountysource.com/teams/react-starter-kit)!
+In production, webpack will extract styles to a `.css` file, minify your JavaScript, and perform additional optimizations such as module deduplication.
 
-<a href="http://www.nekst.me/" target="_blank" title="lehneres">
-  <img src="https://github.com/lehneres.png?size=64" width="64" height="64" alt="lehneres">
-</a>
-<a href="http://www.vidpanel.com/" target="_blank" title="Tarkan Anlar">
-  <img src="https://github.com/tarkanlar.png?size=64" width="64" height="64" alt="Tarkan Anlar">
-</a>
-<a href="https://morten.olsen.io/" target="_blank" title="Morten Olsen">
-  <img src="https://github.com/mortenolsendk.png?size=64" width="64" height="64" alt="Morten Olsen">
-</a>
-<a href="https://twitter.com/adamthomann" target="_blank" title="Adam">
-  <img src="https://github.com/athomann.png?size=64" width="64" height="64" alt="Adam">
-</a>
-<a href="http://dsernst.com/" target="_blank" title="David Ernst">
-  <img src="https://github.com/dsernst.png?size=64" width="64" height="64" alt="David Ernst">
-</a>
-<a href="http://zanehitchcox.com/" target="_blank" title="Zane Hitchcox">
-  <img src="https://github.com/zwhitchcox.png?size=64" width="64" height="64" alt="Zane Hitchcox">
-</a>
-<a href="https://opencollective.com/react-starter-kit" target="_blank">
-  <img src="https://opencollective.com/static/images/become_backer.svg" width="64" height="64" alt="">
-</a>
+## Learning Resources
 
+* [Starting out with react-redux-starter-kit](https://suspicious.website/2016/04/29/starting-out-with-react-redux-starter-kit/) is an introduction to the components used in this starter kit with a small example in the end.
 
-### How to Contribute
+## FAQ
 
-Anyone and everyone is welcome to [contribute](CONTRIBUTING.md) to this project. The best way to
-start is by checking our [open issues](https://github.com/kriasoft/react-starter-kit/issues),
-[submit a new issues](https://github.com/kriasoft/react-starter-kit/issues/new?labels=bug) or
-[feature request](https://github.com/kriasoft/react-starter-kit/issues/new?labels=enhancement),
-participate in discussions, upvote or downvote the issues you like or dislike, send [pull
-requests](CONTRIBUTING.md#pull-requests).
+Having trouble? Check out our [FAQ](https://github.com/davezuko/react-redux-starter-kit/wiki/FAQ:-Frequently-Asked-Questions) or submit an issue. Please be considerate by only posting issues that are directly related to this project; questions about how to implement certain React or Redux features are both best suited for StackOverflow or their respective repositories.
 
+## Thank You
 
-### Learn More
+This project wouldn't be possible without help from the community, so I'd like to highlight some of its biggest contributors. Thank you all for your hard work, you've made my life a lot easier and taught me a lot in the process.
 
-  * [Getting Started with React.js](http://facebook.github.io/react/)
-  * [Getting Started with GraphQL and Relay](https://quip.com/oLxzA1gTsJsE)
-  * [React.js Questions on StackOverflow](http://stackoverflow.com/questions/tagged/reactjs)
-  * [React.js Discussion Board](https://discuss.reactjs.org/)
-  * [Flux Architecture for Building User Interfaces](http://facebook.github.io/flux/)
-  * [Enzyme — JavaScript Testing utilities for React](http://airbnb.io/enzyme/)
-  * [Flow — A static type checker for JavaScript](http://flowtype.org/)
-  * [The Future of React](https://github.com/reactjs/react-future)
-  * [Learn ES6](https://babeljs.io/docs/learn-es6/), [ES6 Features](https://github.com/lukehoban/es6features#readme)
+* [Justin Greenberg](https://github.com/justingreenberg) - For all of your PR's, getting us to Babel 6, and constant work improving our patterns.
+* [Roman Pearah](https://github.com/neverfox) - For your bug reports, help in triaging issues, and PR contributions.
+* [Spencer Dixin](https://github.com/SpencerCDixon) - For your creation of [redux-cli](https://github.com/SpencerCDixon/redux-cli).
+* [Jonas Matser](https://github.com/mtsr) - For your help in triaging issues and unending support in our Gitter channel.
 
-
-### Related Projects
-
-  * [Membership Database](https://github.com/membership/membership.db) — SQL schema boilerplate for user accounts, profiles, roles, and auth claims
-  * [Babel Starter Kit](https://github.com/kriasoft/babel-starter-kit) — Boilerplate for authoring JavaScript/React.js libraries
-
-
-### Support
-
-  * [#react-starter-kit](http://stackoverflow.com/questions/tagged/react-starter-kit) on Stack Overflow — Questions and answers
-  * [#react-starter-kit](https://gitter.im/kriasoft/react-starter-kit) on Gitter — Watch announcements, share ideas and feedback
-  * [GitHub issues](https://github.com/kriasoft/react-starter-kit/issues), or [Scrum board](https://waffle.io/kriasoft/react-starter-kit) — File issues, send feature requests
-  * [appear.in/react](https://appear.in/react) — Open hours! Exchange ideas and experiences (React, GraphQL, startups and pet projects)
-  * [@koistya](https://twitter.com/koistya) on [Codementor](https://www.codementor.io/koistya), or [Skype](http://hatscripts.com/addskype?koistya) — Private consulting
-
-### License
-
-Copyright © 2014-2016 Kriasoft, LLC. This source code is licensed under the MIT
-license found in the [LICENSE.txt](https://github.com/kriasoft/react-starter-kit/blob/master/LICENSE.txt)
-file. The documentation to the project is licensed under the
-[CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/) license.
-
----
-Made with ♥ by Konstantin Tarkus ([@koistya](https://twitter.com/koistya)) and [contributors](https://github.com/kriasoft/react-starter-kit/graphs/contributors)
+And to everyone else who has contributed, even if you are not listed here your work is appreciated.
