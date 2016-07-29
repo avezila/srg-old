@@ -11,7 +11,7 @@ class YMap extends Component {
   render () {
     return (
       <div className={s.root}>
-        <Map 
+        <Map
           onAPIAvailable={this.loaded} 
           center={[55.754734, 37.583314]}
           width="100%"

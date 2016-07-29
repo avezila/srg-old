@@ -1,11 +1,47 @@
 
 .root
-  +span(2 of 12)
-  +shadow-2dp
-  height : 100%
-  position : relative
-  background : white
+  +span(2 of 12 at 0 isolate)
+  width : 250px
   z-index : 9
+  padding: 1rem
+  height : 100%
+  position: relative
+
+.content_wrap
+  +span(2 of 2)
+  max-height : 100%
+  background : white
+  padding : 10px 0
+  position : absolute
+  max-height : 100%
+  overflow : scroll
+  overflow-x : hidden
+  +shadow-2dp
+  
+.content2
+  +span(2 of 2)
+
+.item
+  +span(2 of 2)
+
+.nano_wrap
+  position : relative
+  overflow: hidden
+  height : 100%
+  width : 100%
+  background : white
+  padding : 10px 0
+  +shadow-2dp
+.nano
+  background : white
+  height : 100%
+  width : 100%
+  
+
+.content
+  padding : 0 10px
+  overflow-x : hidden
+
 .title
   +span(2 of 2)
   text-align : center

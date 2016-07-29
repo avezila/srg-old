@@ -7,8 +7,8 @@ class FilterMap extends Component {
   render () {
     return (
       <div className={s.root}>
-        <Filter />
         <YMap />
+        <Filter />
       </div>
     )
   }

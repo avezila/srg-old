@@ -1,7 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import { Router } from 'react-router'
 import { Provider } from 'react-redux'
+import 'nanoscroller/bin/css/nanoscroller.css'
+import $ from 'jquery'
+global.$ = $
+global.jQuery = $
 import 'react-toolbox/lib/commons.scss';
+import 'nanoscroller/bin/javascripts/jquery.nanoscroller.js'
+import 'styles/core.scss'
 
 
 class App extends Component {

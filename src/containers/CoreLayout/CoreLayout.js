@@ -2,6 +2,7 @@ import React from 'react'
 import Header from 'components/Header'
 import s from './CoreLayout.sass'
 
+
 export const CoreLayout = ({ children }) => (
   <div className={s.root}>
     <div className={s.header}>

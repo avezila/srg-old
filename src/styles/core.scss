@@ -1,0 +1,114 @@
+:global{
+  .nano { 
+    background: #bba; width: 500px; height: 500px; 
+  }
+  .nano > .nano-content { 
+    padding: 10px; 
+    padding-right: 17px;
+  }
+  .nano > .nano-pane   { 
+    background: #888; 
+  }
+  .nano > .nano-pane > .nano-slider { 
+    background: #111; 
+  }
+
+.im_dialogs_col .nano > .nano-pane {
+  background: rgba(0, 0, 0, 0);
+  width: 12px;
+  right: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+.im_dialogs_col .nano > .nano-pane > .nano-slider {
+  background: rgba(30, 85, 127, 0.3);
+  margin: 0 5px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.im_history_col_wrap {
+  float: left;
+  width: 69%;
+}
+.im_history_scrollable_wrap {
+  /* Hardware acceleration in Safari */
+  -webkit-transform: translateZ(0);
+  -webkit-perspective: 1000;
+  -webkit-backface-visibility: hidden;
+}
+.im_history_col .nano > .nano-pane,
+.contacts_modal_col .nano > .nano-pane,
+.sessions_modal_col .nano > .nano-pane,
+.stickerset_modal_col .nano > .nano-pane,
+.im_dialogs_modal_col .nano > .nano-pane {
+  background: rgba(216, 223, 225, 0.45);
+  /*45% d8dfe5*/
+  width: 9px;
+  right: 0;
+  top: 0;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+.contacts_modal_col .nano > .nano-pane {
+  width: 5px;
+  right: 4px;
+  top: 0px;
+}
+.sessions_modal_col .nano > .nano-pane,
+.stickerset_modal_col .nano > .nano-pane {
+  top: 4px;
+  bottom: 4px;
+  width: 5px;
+  right: 4px;
+}
+.im_dialogs_modal_col .nano > .nano-pane {
+  width: 6px;
+  right: 2px;
+  top: 10px;
+}
+.im_history_col .nano > .nano-pane {
+  top: 10px;
+  right: 8px;
+}
+.im_history_col .nano > .nano-pane > .nano-slider,
+.contacts_modal_col .nano > .nano-pane > .nano-slider,
+.sessions_modal_col .nano > .nano-pane > .nano-slider,
+.stickerset_modal_col .nano > .nano-pane > .nano-slider,
+.im_dialogs_modal_col .nano > .nano-pane > .nano-slider {
+  background: rgba(137, 160, 179, 0.5);
+  /*50% 89a0b3*/
+  margin: 0;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.reply_markup_scrollable_container .nano > .nano-pane {
+  background: rgba(137, 160, 179, 0.1);
+  right: 2px;
+  width: 3px;
+  top: 0;
+  bottom: 0;
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
+  border-radius: 1px;
+}
+.reply_markup_scrollable_container .nano > .nano-pane > .nano-slider {
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
+  border-radius: 1px;
+  background: #d1d1d1;
+  background: rgba(137, 160, 179, 0.5);
+  margin: 0;
+}
+}
