@@ -44,12 +44,18 @@ const config = {
     colors : true
   },
   compiler_vendor : [
-    'history',
-    'react',
-    'react-redux',
-    'react-router',
-    'react-router-redux',
-    'redux'
+  //  'babel-polyfill',
+  //  'es5-shim',
+  //  'es5-shim/es5-sham',
+  //  'console-polyfill',
+  //  'fetch-ie8',
+  //  'core-js',
+  //  'history',
+  //  'react',
+  //  'react-redux',
+  //  'react-router',
+  //  'react-router-redux',
+  //  'redux'
   ],
 
   // ----------------------------------

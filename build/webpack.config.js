@@ -5,6 +5,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import config from '../config'
 import _debug from 'debug'
 import path from 'path'
+var es3ifyPlugin = require('es3ify-webpack-plugin');
 
 const debug = _debug('app:webpack:config')
 const paths = config.utils_paths
@@ -62,7 +63,7 @@ webpackConfig.plugins = [
     minify: {
       collapseWhitespace: true
     }
-  })
+  }),
 ]
 
 if (__DEV__) {
@@ -82,7 +83,7 @@ if (__DEV__) {
         dead_code: true,
         warnings: false,
       }
-    })
+    }),
   )
 }
 
@@ -127,8 +128,15 @@ webpackConfig.eslint = {
 // JavaScript / JSON
 var babelSettings = {
   cacheDirectory: true,
-  plugins: ['transform-es3-member-expression-literals','transform-es3-property-literals',"transform-es5-property-mutators",'transform-runtime'],
   presets: ['es2015', 'react', 'stage-0'],
+  plugins: [
+    'transform-es3-member-expression-literals',
+    'transform-es3-property-literals',
+    "transform-es5-property-mutators",
+    'transform-runtime',
+    ['transform-es2015-modules-commonjs', { "loose": true }],
+    ['transform-es3-modules-literals', {}],
+  ],
   env: {
     production: {
       presets: ['react-optimize']
@@ -139,10 +147,9 @@ webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
   exclude: /node_modules/,
   loaders: [
-    'es3ify',
+  //  'es3ify',
     'babel?'+JSON.stringify(babelSettings),
   ]
-  
 },
 {
   test: /\.json$/,

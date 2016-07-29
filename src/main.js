@@ -5,7 +5,12 @@ require('es6-promise');
 require('fetch-ie8');
 require('babel-polyfill')
 require('core-js')
-
+require('history')
+require('react')
+require('react-redux')
+require('react-router')
+require('react-router-redux')
+require('redux')
 
 import React from 'react'
 import ReactDOM from 'react-dom'
