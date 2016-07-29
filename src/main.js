@@ -1,3 +1,12 @@
+require('es5-shim');
+require('es5-shim/es5-sham');
+require('console-polyfill');
+require('es6-promise');
+require('fetch-ie8');
+require('babel-polyfill')
+require('core-js')
+
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import createBrowserHistory from 'history/lib/createBrowserHistory'

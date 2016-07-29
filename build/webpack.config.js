@@ -29,7 +29,6 @@ const webpackConfig = {
 // Entry Points
 // ------------------------------------
 const APP_ENTRY_PATHS = [
-  'babel-polyfill',
   paths.client('main.js')
 ]
 
@@ -76,14 +75,15 @@ if (__DEV__) {
   debug('Enable plugins for production (OccurenceOrder, Dedupe & UglifyJS).')
   webpackConfig.plugins.push(
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
+    new webpack.optimize.DedupePlugin()
+    /*new webpack.optimize.UglifyJsPlugin({
       compress: {
         unused: true,
         dead_code: true,
-        warnings: false
+        warnings: false,
+        "support-ie8" : true
       }
-    })
+    })*/
   )
 }
 
@@ -126,20 +126,24 @@ webpackConfig.eslint = {
 // Loaders
 // ------------------------------------
 // JavaScript / JSON
+var babelSettings = {
+  cacheDirectory: true,
+  plugins: ['transform-es3-member-expression-literals','transform-es3-property-literals',"transform-es5-property-mutators",'transform-runtime'],
+  presets: ['es2015', 'react', 'stage-0'],
+  env: {
+    production: {
+      presets: ['react-optimize']
+    }
+  }
+}
 webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
   exclude: /node_modules/,
-  loader: 'babel',
-  query: {
-    cacheDirectory: true,
-    plugins: ['transform-runtime'],
-    presets: ['es2015', 'react', 'stage-0'],
-    env: {
-      production: {
-        presets: ['react-optimize']
-      }
-    }
-  }
+  loaders: [
+    'es3ify',
+    'babel?'+JSON.stringify(babelSettings),
+  ]
+  
 },
 {
   test: /\.json$/,
