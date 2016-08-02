@@ -1,0 +1,24 @@
+:global {
+  .nano { 
+    background: #bba; width: 500px; height: 500px; 
+  }
+  .nano > .nano-content { 
+    padding: 10px; 
+    padding-right: 17px;
+  }
+  .nano > .nano-pane   { 
+    background: #d8dfe5;
+    background: rgba(216, 223, 225, 0.45);
+    border-radius: 2px;
+    transition: none;
+    width: 5px;
+    right: 4px;
+    top: 0px;
+  }
+  .nano > .nano-pane > .nano-slider { 
+    background: #89a0b3;
+    background: rgba(137, 160, 179, 0.5);
+    margin: 0;
+    border-radius: 2px; 
+  }
+}

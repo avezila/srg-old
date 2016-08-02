@@ -44,18 +44,20 @@ const config = {
     colors : true
   },
   compiler_vendor : [
-  //  'babel-polyfill',
-  //  'es5-shim',
-  //  'es5-shim/es5-sham',
-  //  'console-polyfill',
-  //  'fetch-ie8',
-  //  'core-js',
-  //  'history',
-  //  'react',
-  //  'react-redux',
-  //  'react-router',
-  //  'react-router-redux',
-  //  'redux'
+    'es5-shim',
+    'es5-shim/es5-sham.js',
+    'console-polyfill',
+    'fetch-ie8',
+    'babel-polyfill',
+    //'rem-unit-polyfill',
+    //'babel-runtime/core-js.js',
+    //'core-js',
+    //'history',
+    'react',
+    'redux',
+    'react-redux',
+    //'react-router',
+    //'react-router-redux',
   ],
 
   // ----------------------------------
@@ -100,6 +102,7 @@ const pkg = require('../package.json')
 
 config.compiler_vendor = config.compiler_vendor
   .filter((dep) => {
+    return true;
     if (pkg.dependencies[dep]) return true
 
     debug(

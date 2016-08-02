@@ -5,7 +5,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import config from '../config'
 import _debug from 'debug'
 import path from 'path'
-var es3ifyPlugin = require('es3ify-webpack-plugin');
+import es3ifyPlugin from 'es3ify-webpack-plugin-fix';
 
 const debug = _debug('app:webpack:config')
 const paths = config.utils_paths
@@ -75,8 +75,9 @@ if (__DEV__) {
 } else if (__PROD__) {
   debug('Enable plugins for production (OccurenceOrder, Dedupe & UglifyJS).')
   webpackConfig.plugins.push(
+    //new es3ifyPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
+    //new webpack.optimize.DedupePlugin(), // ie8 failed
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         unused: true,
@@ -84,6 +85,7 @@ if (__DEV__) {
         warnings: false,
       }
     }),
+    new es3ifyPlugin(),
   )
 }
 
@@ -128,23 +130,25 @@ webpackConfig.eslint = {
 // JavaScript / JSON
 var babelSettings = {
   cacheDirectory: true,
-  presets: ['es2015', 'react', 'stage-0'],
+  presets: ['es2015-loose', 'react', 'stage-1'],
   plugins: [
-    'transform-es3-member-expression-literals',
-    'transform-es3-property-literals',
-    "transform-es5-property-mutators",
-    'transform-runtime',
+    ['transform-es3-member-expression-literals',{loose:true}],
+    ['transform-es3-property-literals',{loose:true}],
+    ["transform-es5-property-mutators",{loose:true}],
+    ['transform-runtime',{loose:true}],
     ['transform-es2015-modules-commonjs', { "loose": true }],
-    ['transform-es3-modules-literals', {}],
+    ['transform-es3-modules-literals', {loose:true}],
   ],
   env: {
     production: {
       presets: ['react-optimize']
     }
-  }
+  },
 }
 webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
+  //include: ['src',...config.compiler_vendor],
+  //include : [/yandex-map-react-ie8/,'src','server','config','bin','build'],
   exclude: /node_modules/,
   loaders: [
   //  'es3ify',
@@ -249,7 +253,7 @@ webpackConfig.postcss = [
     autoprefixer: {
       add: true,
       remove: true,
-      browsers: ['last 2 versions']
+      browsers: ['last 2 versions','ie 8','ie 9']
     },
     discardComments: {
       removeAll: true
@@ -297,5 +301,9 @@ if (!__DEV__) {
     })
   )
 }
+
+webpackConfig.plugins.push(
+  
+)
 
 export default webpackConfig

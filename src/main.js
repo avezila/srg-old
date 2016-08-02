@@ -1,31 +1,24 @@
-require('es5-shim');
-require('es5-shim/es5-sham');
-require('console-polyfill');
-require('es6-promise');
-require('fetch-ie8');
-require('babel-polyfill')
-require('core-js')
-require('history')
-require('react')
-require('react-redux')
-require('react-router')
-require('react-router-redux')
-require('redux')
-
 import React from 'react'
 import ReactDOM from 'react-dom'
-import createBrowserHistory from 'history/lib/createBrowserHistory'
-import { useRouterHistory } from 'react-router'
-import { syncHistoryWithStore } from 'react-router-redux'
+//import createBrowserHistory from 'history/lib/createBrowserHistory'
+//import { useRouterHistory } from 'react-router'
+//import { syncHistoryWithStore } from 'react-router-redux'
 import createStore from './store/createStore'
 import App from './containers/App'
+
+import * as router from 'react-router'
+console.log(router)
+import * as history from 'history'
+console.log(history)
+import * as rrr from 'redux-router'
+console.log(rrr)
 
 // ========================================================
 // Browser History Setup
 // ========================================================
-const browserHistory = useRouterHistory(createBrowserHistory)({
-  basename: __BASENAME__
-})
+//const browserHistory = useRouterHistory(createBrowserHistory)({
+//  basename: __BASENAME__
+//})
 
 // ========================================================
 // Store and History Instantiation
@@ -35,10 +28,10 @@ const browserHistory = useRouterHistory(createBrowserHistory)({
 // so we need to provide a custom `selectLocationState` to inform
 // react-router-redux of its location.
 const initialState = window.___INITIAL_STATE__
-const store = createStore(initialState, browserHistory)
-const history = syncHistoryWithStore(browserHistory, store, {
-  selectLocationState: (state) => state.router
-})
+const store = createStore(initialState)//, browserHistory)
+//const history = syncHistoryWithStore(browserHistory, store, {
+//  selectLocationState: (state) => state.router
+//})
 
 // ========================================================
 // Developer Tools Setup
@@ -60,7 +53,6 @@ let render = () => {
   ReactDOM.render(
     <App
       store={store}
-      history={history}
       routes={routes}
     />,
     MOUNT_NODE
@@ -68,6 +60,7 @@ let render = () => {
 }
 
 // This code is excluded from production bundle
+
 if (__DEV__) {
   if (module.hot) {
     // Development render functions

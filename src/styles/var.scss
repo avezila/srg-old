@@ -27,9 +27,9 @@ $susy: (
   gutter-position: inside,
   use-custom: (
     box-sizing: true,
-    rem: true,
+    rem: false,
     clearfix: true,
   )
 );
 
-$header-height : 5rem;
+$header-height : 50px;
