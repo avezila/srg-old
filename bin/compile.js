@@ -4,6 +4,7 @@ import webpackCompiler from '../build/webpack-compiler'
 import webpackConfig from '../build/webpack.config'
 import config from '../config'
 
+
 const debug = _debug('app:bin:compile')
 const paths = config.utils_paths
 

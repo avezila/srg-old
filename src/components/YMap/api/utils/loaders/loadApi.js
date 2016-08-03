@@ -11,7 +11,7 @@ const defaultOptions = {
     lang: 'ru_RU',
     coordorder: 'latlong',
     load: 'package.full',
-    //mode: 'debug',
+    mode: 'release',
     ns: '',
     onload: successCallbackName,
     onerror: errorCallbackName

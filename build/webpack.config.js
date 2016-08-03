@@ -7,6 +7,8 @@ import _debug from 'debug'
 import path from 'path'
 import es3ifyPlugin from 'es3ify-webpack-plugin-fix';
 
+
+
 const debug = _debug('app:webpack:config')
 const paths = config.utils_paths
 const {__DEV__, __PROD__, __TEST__} = config.globals
@@ -18,7 +20,10 @@ const webpackConfig = {
   devtool: config.compiler_devtool,
   resolve: {
     root: paths.client(),
-    extensions: ['', '.js', '.jsx', '.json','.css','.scss','.sass']
+    extensions: ['', '.js', '.jsx', '.json','.css','.scss','.sass'],
+    aliace : {
+      "regenerator-runtime" : "regenerator-runtime-fix"
+    }
   },
   module: {},
   modulesDirectories: [
@@ -130,7 +135,7 @@ webpackConfig.eslint = {
 // JavaScript / JSON
 var babelSettings = {
   cacheDirectory: true,
-  presets: ['es2015-loose', 'react', 'stage-1'],
+  presets: ['es2015-loose', 'react', 'stage-0'],
   plugins: [
     ['transform-es3-member-expression-literals',{loose:true}],
     ['transform-es3-property-literals',{loose:true}],
@@ -138,6 +143,7 @@ var babelSettings = {
     ['transform-runtime',{loose:true}],
     ['transform-es2015-modules-commonjs', { "loose": true }],
     ['transform-es3-modules-literals', {loose:true}],
+    //['transform-promise-to-bluebird'],
   ],
   env: {
     production: {
@@ -149,7 +155,8 @@ webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
   //include: ['src',...config.compiler_vendor],
   //include : [/yandex-map-react-ie8/,'src','server','config','bin','build'],
-  exclude: /node_modules/,
+  //exclude: /node_modules/,
+  exclude : /(?=.*\b(node_modules)\b)(?!.*\b(react-router|redux-router|regenerator-runtime)\b)(.+)/i,
   loaders: [
   //  'es3ify',
     'babel?'+JSON.stringify(babelSettings),

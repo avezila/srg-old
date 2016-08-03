@@ -10,10 +10,12 @@ import 'nanoscroller/bin/javascripts/jquery.nanoscroller.js'
 import 'styles/core.scss'
 
 
+import { ReduxRouter } from 'redux-router';
+
 class App extends Component {
   static propTypes = {
     //history: PropTypes.object.isRequired,
-    //routes: PropTypes.object.isRequired,
+    routes: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
   }
 
@@ -22,7 +24,9 @@ class App extends Component {
 
     return (
       <Provider store={store}>
-        {routes}
+        <ReduxRouter>
+          {routes}
+        </ReduxRouter>
       </Provider>
     )
   }

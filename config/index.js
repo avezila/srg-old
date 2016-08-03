@@ -44,13 +44,15 @@ const config = {
     colors : true
   },
   compiler_vendor : [
+    //'bluebird',
     'es5-shim',
     'es5-shim/es5-sham.js',
     'console-polyfill',
     'fetch-ie8',
-    'babel-polyfill',
-    //'rem-unit-polyfill',
+    'regenerator-runtime-fix',
+    'babel-polyfill-fix',
     //'babel-runtime/core-js.js',
+    //'rem-unit-polyfill',
     //'core-js',
     //'history',
     'react',

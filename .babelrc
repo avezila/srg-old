@@ -5,13 +5,7 @@
 // module.hot is disabled), so keeping it and related plugins contained
 // within webpack helps prevent unexpected errors.
 {
-  "presets": ["es2015", "react", "stage-0","react-optimize"],
+  "presets": ["es2015", "react", "stage-0"],
   "plugins": [
-    'transform-es3-member-expression-literals',
-    'transform-es3-property-literals',
-    "transform-es5-property-mutators",
-    'transform-runtime',
-    ['transform-es2015-modules-commonjs', { "loose": true }], 
-    ['transform-es3-modules-literals', {}],
   ]  
 }

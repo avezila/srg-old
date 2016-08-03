@@ -10,6 +10,7 @@ class MapController {
         this.map = this._map;
         this.events = this._map.events.group();
 
+
         this._setupCollection();
 
         return this;

@@ -1,24 +1,34 @@
+import BlueBird from 'bluebird/js/browser/bluebird.min.js'
+global.Promise = BlueBird;
+require('babel-runtime/core-js/promise').default = BlueBird;
 import React from 'react'
 import ReactDOM from 'react-dom'
-//import createBrowserHistory from 'history/lib/createBrowserHistory'
-//import { useRouterHistory } from 'react-router'
-//import { syncHistoryWithStore } from 'react-router-redux'
+// import createBrowserHistory from 'history/lib/createBrowserHistory'
+// import { useRouterHistory } from 'react-router'
+// import { syncHistoryWithStore } from 'react-router-redux'
 import createStore from './store/createStore'
 import App from './containers/App'
 
+import { reduxReactRouter, routerStateReducer, ReduxRouter } from 'redux-router';
+//import { createHistory } from 'history';
+import { Route } from 'react-router';
+
+
+
+/*
 import * as router from 'react-router'
 console.log(router)
 import * as history from 'history'
 console.log(history)
 import * as rrr from 'redux-router'
 console.log(rrr)
-
+*/
 // ========================================================
 // Browser History Setup
 // ========================================================
-//const browserHistory = useRouterHistory(createBrowserHistory)({
-//  basename: __BASENAME__
-//})
+// const browserHistory = useRouterHistory(createBrowserHistory)({
+//   basename: __BASENAME__
+// })
 
 // ========================================================
 // Store and History Instantiation
@@ -29,9 +39,9 @@ console.log(rrr)
 // react-router-redux of its location.
 const initialState = window.___INITIAL_STATE__
 const store = createStore(initialState)//, browserHistory)
-//const history = syncHistoryWithStore(browserHistory, store, {
-//  selectLocationState: (state) => state.router
-//})
+// const history = syncHistoryWithStore(browserHistory, store, {
+//   selectLocationState: (state) => state.router
+// })
 
 // ========================================================
 // Developer Tools Setup
@@ -54,6 +64,7 @@ let render = () => {
     <App
       store={store}
       routes={routes}
+      //history={history}
     />,
     MOUNT_NODE
   )
