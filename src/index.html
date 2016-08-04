@@ -3,11 +3,14 @@
 <head>
   <title>React Redux Starter Kit</title>
   <meta charset="utf-8">
-  <meta httpEquiv="x-ua-compatible" content="ie=edge" />
+  <meta httpEquiv="x-ua-compatible" content="ie=8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic' rel='stylesheet' type='text/css' />
-  <script src="https://api-maps.yandex.ru/2.0-stable/?load=package.full&lang=ru-RU" type="text/javascript"></script>
+</head>
+<body>
+  <div id="root" style="height: 100%"></div>
   <script>
+    // here, cs bug in vendor scripts.
     // IE fix  ## typeof clearInterval == 'object'
     var ieFix = {
       'setTimeout' : function(orig) {
@@ -50,8 +53,5 @@
       window[func] = ieFix[func];
     }
   </script>
-</head>
-<body>
-  <div id="root" style="height: 100%"></div>
 </body>
 </html>

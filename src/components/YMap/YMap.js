@@ -1,14 +1,18 @@
 import React, { Component, PropTypes } from 'react'
 import s from './YMap.sass'
+import {loadApi} from './Api'
 
-Promise.promisifyAll(ymaps);
 
 class YMap extends Component {
   static propTypes = {
   }
+  componentWillUnmount (){
+    this.map.destroy()
+  }
   async componentDidMount (){
-    await ymaps.readyAsync();
-    let myMap = new ymaps.Map(this.refs.map, {
+    await loadApi()
+
+    this.map = new ymaps.Map(this.refs.map, {
         center: [55.76, 37.64], 
         zoom: 13,
         behaviors : ["default","scrollZoom"]
@@ -17,13 +21,14 @@ class YMap extends Component {
     let myPlacemark = new ymaps.Placemark([55.76, 37.64], { 
         hintContent: 'Москва!', 
         balloonContent: 'Столица России' 
-    });
+    },{draggable:true});
 
-    myMap.geoObjects.add(myPlacemark);
-
+    this.map.geoObjects.add(myPlacemark);
   }
   render (){ 
-    return <div ref="map" className={s.root} /> 
+    return (
+      <div ref="map" className={s.root}/>
+    ) 
   }
 }
 

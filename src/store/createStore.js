@@ -18,11 +18,16 @@ export default (initialState = {}) => { //, history) => {
   // ======================================================
   // Store Enhancers
   // ======================================================
-  console.log("supportsHistory",supportsHistory())
-  let create_history = (supportsHistory())? createHistory : createHashHistory; 
+  let historyPush = supportsHistory();
+  let create_history = historyPush? createHistory : createHashHistory;
+  if (!historyPush) {
+    if(window.location.hash == "")
+      window.location.hash = window.location.pathname;
+  }
+
   const enhancers = [
     reduxReactRouter({
-      createHistory: create_history
+      createHistory: ()=> create_history({queryKey:"_",keyLength:1})
     }),
   ]
   if (__DEBUG__) {

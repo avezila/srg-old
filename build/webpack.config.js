@@ -85,10 +85,11 @@ if (__DEV__) {
     //new webpack.optimize.DedupePlugin(), // ie8 failed
     new webpack.optimize.UglifyJsPlugin({
       compress: {
-        unused: true,
-        dead_code: true,
+        unused: false,
+        dead_code: false,
         warnings: false,
-      }
+      },
+      comments : false
     }),
     new es3ifyPlugin(),
   )
@@ -143,7 +144,12 @@ var babelSettings = {
     ['transform-runtime',{loose:true}],
     ['transform-es2015-modules-commonjs', { "loose": true }],
     ['transform-es3-modules-literals', {loose:true}],
-    //['transform-promise-to-bluebird'],
+    ['transform-promise-to-bluebird'],
+    ["transform-async-to-module-method", {
+      "module": "bluebird",
+      "method": "coroutine"
+    }],
+    //"transform-bluebird",
   ],
   env: {
     production: {
@@ -156,7 +162,7 @@ webpackConfig.module.loaders = [{
   //include: ['src',...config.compiler_vendor],
   //include : [/yandex-map-react-ie8/,'src','server','config','bin','build'],
   //exclude: /node_modules/,
-  exclude : /(?=.*\b(node_modules)\b)(?!.*\b(react-router|redux-router|regenerator-runtime)\b)(.+)/i,
+  exclude : /(?=.*\b(node_modules)\b)(?!.*\b(react-router|redux-router|regenerator-runtime|react-mdl)\b)(.+)/i,
   loaders: [
   //  'es3ify',
     'babel?'+JSON.stringify(babelSettings),

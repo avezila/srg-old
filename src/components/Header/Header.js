@@ -10,7 +10,7 @@ class Header extends Component {
       {pathname : '/', display : 'map'},
       {pathname : '/table', query : {jwt : "asdcv23"}, display : "table"}
     ].map((l,i) =>
-      <Link className={s.link} to={l}>{l.display}</Link>
+      <Link key={i} className={s.link} to={l}>{l.display}</Link>
     )
     return (
       <div className={s.root}>
