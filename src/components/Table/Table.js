@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
-import s from './Table.sass'
 import {ProgressBar} from 'react-bootstrap'
+
+import s from './Table.sass'
 
 
 class Table extends Component {
@@ -20,11 +21,12 @@ class Table extends Component {
     }).bind(this),50)
   }
   render () {
-    //console.log(this.props)
     return (
       <div className={s.root}>
-        Table
-         <ProgressBar active now={this.state.progress} />
+        <div className={s.content}>
+          Table
+          <ProgressBar active now={this.state.progress} />
+         </div>
       </div>
     )
   }

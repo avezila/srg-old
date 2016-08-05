@@ -1,14 +1,10 @@
 import React, { Component, PropTypes } from 'react'
-import s from './YMap.sass'
+
 import {loadApi} from './Api'
+import s from './YMap.sass'
 
 
 class YMap extends Component {
-  static propTypes = {
-  }
-  componentWillUnmount (){
-    this.map.destroy()
-  }
   async componentDidMount (){
     await loadApi()
 
@@ -24,6 +20,9 @@ class YMap extends Component {
     },{draggable:true});
 
     this.map.geoObjects.add(myPlacemark);
+  }
+  componentWillUnmount (){
+    this.map.destroy()
   }
   render (){ 
     return (

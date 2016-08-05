@@ -1,19 +1,35 @@
+
 .root
-    +span(12 of 12 at 0 isolate)
-    background : #5682A3
-    color : white
-    height : 100%
-    font-size : 20px
-    font-weight : 500
-    +shadow-2dp
-    position : relative
-    z-index : 10
+  +span(12 of 12)
+  background : #5682A3
+  color : white
+  font-size : 20px
+  font-weight : 500
+  +shadow-2dp
+  position : relative
+  z-index : 10
+
 .text
+  &,&:hover,&:visited,&:focus
+    color : #FFF
+    text-decoration : none
     padding: 0 10px
+    padding-right : 30px
     float: left
     text-align : center
+  
 .link
-    @extend .text
-    color : white
-    &:hover
-        text-decoration : underline
+  padding: 0 15px
+  float: left
+  text-align : center
+  font-size : 0.8em
+
+  &,&:hover,&:visited,&:focus
+    text-decoration : none
+    color : #FFF
+
+  &:hover
+    background : #5e8bad
+    color : #FFF
+  &.active 
+    background : #3e6b8d

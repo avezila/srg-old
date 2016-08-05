@@ -20,14 +20,24 @@ export default (initialState = {}) => { //, history) => {
   // ======================================================
   let historyPush = supportsHistory();
   let create_history = historyPush? createHistory : createHashHistory;
+  let historyOptions = {
+    queryKey  : "_",
+    keyLength :1
+  }
   if (!historyPush) {
     if(window.location.hash == "")
       window.location.hash = window.location.pathname;
+  }else {
+    let hash = (window.location.hash+"").replace(/^\#/,"");
+    if(hash && hash != 'undefined'){
+      console.log(hash)
+      history.pushState({},"",hash)
+    }
   }
 
   const enhancers = [
     reduxReactRouter({
-      createHistory: ()=> create_history({queryKey:"_",keyLength:1})
+      createHistory: ()=> create_history(historyOptions)
     }),
   ]
   if (__DEBUG__) {

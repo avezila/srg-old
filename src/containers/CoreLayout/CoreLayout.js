@@ -1,12 +1,10 @@
 import React, {Component, PropTypes} from 'react'
+
 import Header from 'components/Header'
 import s from './CoreLayout.sass'
 
 
 class CoreLayout extends Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired
-  }
   render () {
     return (
       <div className={s.root}>
@@ -20,5 +18,6 @@ class CoreLayout extends Component {
     )
   }
 }
+
 
 export default CoreLayout

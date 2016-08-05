@@ -1,8 +1,10 @@
+@import 'susy/sass/susy';
+
+@import 'compass-mixins/lib/compass';
+
 @import 'react-toolbox/lib/colors';
 @import 'react-toolbox/lib/mixins';
 @import 'react-toolbox/lib/globals';
-@import 'susy/sass/susy';
-@import 'compass-mixins/lib/compass';
 
 $susy: (
   global-box-sizing: border-box,
