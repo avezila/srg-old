@@ -44,7 +44,7 @@ const config = {
     colors : true
   },
   compiler_vendor : [
-    //'bluebird',
+    'timers-polyfill',
     'event-listener-polyfill',
     'html5shiv/dist/html5shiv.min',
     'html5shiv/dist/html5shiv-printshiv.min',
@@ -52,11 +52,8 @@ const config = {
     'es5-shim/es5-sham.js',
     'console-polyfill',
     'fetch-ie8',
-    'regenerator-runtime-fix',
-    'babel-polyfill-fix',
-    //'babel-runtime/core-js.js',
-    //'rem-unit-polyfill',
-    //'core-js',
+    'regenerator-runtime',
+    'babel-polyfill',
     'jquery',
     'bluebird',
     'react',
@@ -65,8 +62,6 @@ const config = {
     'history',
     'react-router',
     'redux-router'
-    //'react-router',
-    //'react-router-redux',
   ],
 
   // ----------------------------------
@@ -103,23 +98,6 @@ config.globals = {
   '__COVERAGE__' : !argv.watch && config.env === 'test',
   '__BASENAME__' : JSON.stringify(process.env.BASENAME || '')
 }
-
-// ------------------------------------
-// Validate Vendor Dependencies
-// ------------------------------------
-const pkg = require('../package.json')
-
-config.compiler_vendor = config.compiler_vendor
-  .filter((dep) => {
-    return true;
-    if (pkg.dependencies[dep]) return true
-
-    debug(
-      `Package "${dep}" was not found as an npm dependency in package.json; ` +
-      `it won't be included in the webpack vendor bundle.
-       Consider removing it from vendor_dependencies in ~/config/index.js`
-    )
-  })
 
 // ------------------------------------
 // Utilities

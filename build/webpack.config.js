@@ -5,7 +5,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import config from '../config'
 import _debug from 'debug'
 import path from 'path'
-import es3ifyPlugin from 'es3ify-webpack-plugin-fix';
+import es3ifyPlugin from 'es3ify-webpack-plugin';
 
 
 
@@ -21,9 +21,6 @@ const webpackConfig = {
   resolve: {
     root: paths.client(),
     extensions: ['', '.js', '.jsx', '.json','.css','.scss','.sass'],
-    aliace : {
-      "regenerator-runtime" : "regenerator-runtime-fix"
-    }
   },
   module: {},
   modulesDirectories: [
@@ -31,6 +28,7 @@ const webpackConfig = {
     path.resolve(__dirname, './node_modules')
   ]
 }
+
 // ------------------------------------
 // Entry Points
 // ------------------------------------
@@ -80,7 +78,6 @@ if (__DEV__) {
 } else if (__PROD__) {
   debug('Enable plugins for production (OccurenceOrder, Dedupe & UglifyJS).')
   webpackConfig.plugins.push(
-    //new es3ifyPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
     //new webpack.optimize.DedupePlugin(), // ie8 failed
     new webpack.optimize.UglifyJsPlugin({
@@ -105,32 +102,6 @@ if (!__TEST__) {
 }
 
 // ------------------------------------
-// Pre-Loaders
-// ------------------------------------
-/*
-[ NOTE ]
-We no longer use eslint-loader due to it severely impacting build
-times for larger projects. `npm run lint` still exists to aid in
-deploy processes (such as with CI), and it's recommended that you
-use a linting plugin for your IDE in place of this loader.
-
-If you do wish to continue using the loader, you can uncomment
-the code below and run `npm i --save-dev eslint-loader`. This code
-will be removed in a future release.
-
-webpackConfig.module.preLoaders = [{
-  test: /\.(js|jsx)$/,
-  loader: 'eslint',
-  exclude: /node_modules/
-}]
-
-webpackConfig.eslint = {
-  configFile: paths.base('.eslintrc'),
-  emitWarning: __DEV__
-}
-*/
-
-// ------------------------------------
 // Loaders
 // ------------------------------------
 // JavaScript / JSON
@@ -149,7 +120,6 @@ var babelSettings = {
       "module": "bluebird",
       "method": "coroutine"
     }],
-    //"transform-bluebird",
   ],
   env: {
     production: {
@@ -159,12 +129,8 @@ var babelSettings = {
 }
 webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
-  //include: ['src',...config.compiler_vendor],
-  //include : [/yandex-map-react-ie8/,'src','server','config','bin','build'],
-  //exclude: /node_modules/,
-  exclude : /(?=.*\b(node_modules)\b)(?!.*\b(react-router|redux-router|regenerator-runtime|react-mdl)\b)(.+)/i,
+  exclude : /(?=.*\b(node_modules)\b)(?!.*\b(react-router|redux-router)\b)(.+)/i,
   loaders: [
-  //  'es3ify',
     'babel?'+JSON.stringify(babelSettings),
   ]
 },
@@ -314,9 +280,5 @@ if (!__DEV__) {
     })
   )
 }
-
-webpackConfig.plugins.push(
-  
-)
 
 export default webpackConfig

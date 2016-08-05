@@ -1,57 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <title>React Redux Starter Kit</title>
+  <title>Банк Оценщик - поиск аналогов</title>
   <meta charset="utf-8">
-  <meta httpEquiv="x-ua-compatible" content="ie=8" />
+  <meta httpEquiv="x-ua-compatible" content="ie=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic' rel='stylesheet' type='text/css' />
 </head>
 <body>
   <div id="root" style="height: 100%"></div>
-  <script>
-    // here, cs bug in vendor scripts.
-    // IE fix  ## typeof clearInterval == 'object'
-    var ieFix = {
-      'setTimeout' : function(orig) {
-        return function(func, time) {
-          return orig(func, time);
-        }
-      },
-      'clearTimeout' : function(orig) {
-        return function(num) {
-          return orig(num);
-        }
-      },
-      'setInterval' : function(orig) {
-        return function(func, time) {
-          return orig(func, time);
-        }
-      },
-      'clearInterval' : function(orig) {
-        return function(num) {
-          return orig(num);
-        }
-      },
-      'alert' : function(orig) {
-        return function(x) {
-          return orig(x);
-        }
-      }
-    };
-    //for each function prone to breaking
-    for (var func in ieFix) {
-      //check if not broken
-      if (typeof window[func] !== 'object')
-        continue;
-      //generate the new function from the old
-      ieFix[func] = ieFix[func](window[func]);
-      //allows us to edit IE window variables
-      // eval('var ' + func + ';');
-      window.func = window.func;
-      //override the function
-      window[func] = ieFix[func];
-    }
-  </script>
 </body>
 </html>

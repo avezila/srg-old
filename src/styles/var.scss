@@ -1,26 +1,8 @@
-/*
-Application Settings Go Here
-------------------------------------
-This file acts as a bundler for all variables/mixins/themes, so they
-can easily be swapped out without `core.scss` ever having to know.
-
-For example:
-
-@import './variables/colors';
-@import './variables/components';
-@import './themes/default';
-*/
-//@import "bootswatch/paper/variables";
-
 @import 'react-toolbox/lib/colors';
 @import 'react-toolbox/lib/mixins';
 @import 'react-toolbox/lib/globals';
 @import 'susy/sass/susy';
 @import 'compass-mixins/lib/compass';
-//@import './bootstrap/variables.scss';
-
-//@import "bootstrap-sass-official/assets/stylesheets/bootstrap";
-//@import "bootswatch/theme/bootswatch";
 
 $susy: (
   global-box-sizing: border-box,
