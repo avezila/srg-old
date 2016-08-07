@@ -2,8 +2,10 @@ import React, { Component, PropTypes } from 'react'
 import { Provider } from 'react-redux'
 import { ReduxRouter } from 'redux-router';
 
-import "bootswatch"
-import 'react-toolbox/lib/commons.scss'
+import "todc-bootstrap/dist/css/bootstrap.css"
+import "todc-bootstrap/dist/css/bootstrap-theme.css"
+import "todc-bootstrap/dist/css/todc-bootstrap.css"
+
 import "styles/core"
 
 

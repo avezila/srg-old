@@ -3,7 +3,7 @@ import thunk from 'redux-thunk'
 import { reduxReactRouter } from 'redux-router';
 import { createHistory,createHashHistory } from 'history';
 import { supportsHistory } from 'history/lib/DOMUtils.js';
-import createSagaMiddleware from 'lib/redux-saga'
+import createSagaMiddleware from 'redux-saga'
 
 import makeRootReducer from './reducers'
 import mySaga from '../saga'
@@ -25,7 +25,6 @@ export default (initialState = {}) => {
   }else {
     let hash = (window.location.hash+"").replace(/^\#/,"");
     if(hash && hash != 'undefined'){
-      console.log(hash)
       history.pushState({},"",hash)
     }
   }

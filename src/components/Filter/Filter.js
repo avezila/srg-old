@@ -21,7 +21,6 @@ class Filter extends Component {
           autoFocus={true}
           type="text"
           value={this.props.filter.input}
-          placeholder="Large text"
           onChange={::this.onChange} />
       </Nano>
     )

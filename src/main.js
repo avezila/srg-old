@@ -15,11 +15,8 @@ $.ajaxSetup({
   cache: true
 });
 
-// Fix regeneratorRuntime
-//global._regeneratorRuntime = regeneratorRuntime
 
-
-const initialState = window.___INITIAL_STATE__
+const initialState = window.___INITIAL_STATE__ // for server side rendering
 const store = createStore(initialState)
 
 
@@ -39,7 +36,6 @@ const MOUNT_NODE = document.getElementById('root')
 
 let render = () => {
   const routes = require('./routes/index').default(store)
-
   ReactDOM.render(
     <App
       store={store}
@@ -49,7 +45,6 @@ let render = () => {
     MOUNT_NODE
   )
 }
-
 
 // This code is excluded from production bundle
 if (__DEV__) {

@@ -8,7 +8,7 @@ export const app = handleActions({
     ...state,
     filter : action.payload.filter,
   }),
-  [actions.offerRequest]: (state, action) => ({
+  [actions.offerRequest]: (state, action) =>({
     ...state,
   }),
   [actions.offerResponse]: (state, action) => ({
