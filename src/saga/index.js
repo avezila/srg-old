@@ -22,7 +22,7 @@ function * offerRequest(action){
 }
 
 function * mySaga() {
-  yield* takeEvery('FILTER_CHANGE', offerRequest);
+  yield* takeLatest('FILTER_CHANGE', offerRequest);
 }
 
 export default mySaga;
