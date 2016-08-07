@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import BlueBird from 'bluebird/js/browser/bluebird.min.js'
-
 import App from './containers/App'
 import createStore from './store/createStore'
 
@@ -11,10 +10,13 @@ require('babel-runtime/core-js/promise').default = BlueBird;
 
 // Global jQuery
 import $ from 'jquery'
-global.$ = $
+global.$ = global.jQuery = $
 $.ajaxSetup({
   cache: true
 });
+
+// Fix regeneratorRuntime
+//global._regeneratorRuntime = regeneratorRuntime
 
 
 const initialState = window.___INITIAL_STATE__

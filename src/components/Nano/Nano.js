@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react'
+
 import 'nanoscroller/bin/css/nanoscroller.css'
 import 'nanoscroller/bin/javascripts/jquery.nanoscroller.js'
 import s from './Nano.sass'
+
 
 class Nano extends Component {
   static propTypes = {
@@ -22,9 +24,11 @@ class Nano extends Component {
   }
   render () {
     return (
-      <div ref="nano" className={s.nano+" nano"}>
-        <div className={s.content+" nano-content"}>
-          {this.props.children}
+      <div {...this.props} className={`${this.props.className||""} ${s.root}`}>
+        <div  ref="nano" className={`${s.nano} nano`}>
+          <div className={s.content+" nano-content"}>
+            {this.props.children}
+          </div>
         </div>
       </div>
     )

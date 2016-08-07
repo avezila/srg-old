@@ -1,12 +1,8 @@
 import React from 'react'
 import { Route, IndexRoute, IndexRedirect, Redirect } from 'react-router';
 
-import YMap from 'components/YMap'
-import Table from 'components/Table'
-import Filter from 'components/Filter'
+import {YMap, Table, Filter, ErrorCode} from "components"
 import CoreLayout from 'containers/CoreLayout'
-import Error from 'components/Error'
-
 
 let Layouts = {
   Filter : ({children})=>(
@@ -18,14 +14,14 @@ let Layouts = {
   ),
   Error403 : ()=>(
     <CoreLayout>
-      <Error 
+      <ErrorCode
         title="Access Denied"
         content="Sorry, but you do not have permissions to view this page."  />
     </CoreLayout>
   ),
   Error404 : ()=>(
     <CoreLayout>
-      <Error 
+      <ErrorCode
         title="Page Not Found"
         content="Sorry, but the page you were trying to view does not exist."  />
     </CoreLayout>
@@ -44,6 +40,5 @@ export const MainRoute = () => (
     <Redirect from="*" to="/404/*" />
   </Route>
 );
-
 
 export default MainRoute

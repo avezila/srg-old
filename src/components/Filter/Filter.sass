@@ -1,13 +1,12 @@
-.root
-  +span(2 of 12 at 0 isolate)
-  position: relative
-  width : $filter-width
-  height : 100%
-  padding: 6px
-  z-index : 9
 
-.panel
+.root
+  +isolate
+  position: absolute
+  width : $filter-width
+
+  left    : $gutter
+  top     : $gutter
+  bottom  : $gutter
+
+  z-index : 9
   +shadow-2dp
-  background : white
-  height : 100%
-  padding : 10px 0

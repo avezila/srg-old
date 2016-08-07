@@ -1,17 +1,6 @@
-import * as types from '../const/ActionTypes';
+import {createAction} from "redux-actions"
 
-
-export function apiRequestContext(){
-  return {
-    type: types.API_REQUEST_CONTEXT,
-  };
-}
-
-
-export function apiReceiveContext(context,error){
-  return {
-    type: types.API_RECEIVE_CONTEXT,
-    context,
-    error,
-  }
-}
+export const filterChange = createAction('FILTER_CHANGE')
+export const offerRequest = createAction('OFFERS_REQUEST')
+export const offerResponse = createAction('OFFERS_RESPONSE')
+export const offerError = createAction('OFFERS_ERROR')

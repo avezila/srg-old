@@ -1,3 +1,1 @@
-import YMap from './YMap'
-
-export default YMap
+export default from "./YMap"

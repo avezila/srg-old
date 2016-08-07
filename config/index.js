@@ -52,7 +52,7 @@ const config = {
     'es5-shim/es5-sham.js',
     'console-polyfill',
     'fetch-ie8',
-    'regenerator-runtime',
+    'babel-core/register',
     'babel-polyfill',
     'jquery',
     'bluebird',
@@ -61,7 +61,7 @@ const config = {
     'react-redux',
     'history',
     'react-router',
-    'redux-router'
+    'redux-router',
   ],
 
   // ----------------------------------

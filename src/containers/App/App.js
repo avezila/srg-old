@@ -10,7 +10,7 @@ import "styles/core"
 class App extends Component {
   static propTypes = {
     routes: PropTypes.object.isRequired,
-    store: PropTypes.object.isRequired
+    store: PropTypes.object.isRequired,
   }
   render () {
     return (

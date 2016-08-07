@@ -16,7 +16,7 @@ class Header extends Component {
     )
     return (
       <div className={s.root}>
-        <Link className={s.text} to="/">Банк Оценщик</Link>
+        <Link className={s.logo} to="/">Банк Оценщик</Link>
         {links}
       </div>
     )

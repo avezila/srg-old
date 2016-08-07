@@ -1,23 +1,18 @@
 import { applyMiddleware, compose, createStore } from 'redux'
-//import { routeReducer,syncHistory } from 'react-router-redux'
 import thunk from 'redux-thunk'
-import makeRootReducer from './reducers'
-
 import { reduxReactRouter } from 'redux-router';
 import { createHistory,createHashHistory } from 'history';
 import { supportsHistory } from 'history/lib/DOMUtils.js';
+import createSagaMiddleware from 'lib/redux-saga'
+
+import makeRootReducer from './reducers'
+import mySaga from '../saga'
 
 
-export default (initialState = {}) => { //, history) => {
-  // ======================================================
-  // Middleware Configuration
-  // ======================================================
-  //let routerMiddleware = syncHistory(history);
-  const middleware = [thunk]//, routerMiddleware]
+export default (initialState = {}) => {
+  const sagaMiddleware = createSagaMiddleware()
+  const middleware = [sagaMiddleware]
 
-  // ======================================================
-  // Store Enhancers
-  // ======================================================
   let historyPush = supportsHistory();
   let create_history = historyPush? createHistory : createHashHistory;
   let historyOptions = {
@@ -35,6 +30,7 @@ export default (initialState = {}) => { //, history) => {
     }
   }
 
+
   const enhancers = [
     reduxReactRouter({
       createHistory: ()=> create_history(historyOptions)
@@ -47,18 +43,18 @@ export default (initialState = {}) => { //, history) => {
     }
   }
 
-  // ======================================================
-  // Store Instantiation and HMR Setup
-  // ======================================================
+
   const store = createStore(
     makeRootReducer(),
     initialState,
     compose(
       applyMiddleware(...middleware),
-      ...enhancers
+      ...enhancers,
     )
   )
   store.asyncReducers = {}
+
+  sagaMiddleware.run(mySaga)
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {

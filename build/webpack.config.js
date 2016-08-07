@@ -116,6 +116,7 @@ var babelSettings = {
     ['transform-es2015-modules-commonjs', { "loose": true }],
     ['transform-es3-modules-literals', {loose:true}],
     ['transform-promise-to-bluebird'],
+    ["transform-decorators-legacy"],
     ["transform-async-to-module-method", {
       "module": "bluebird",
       "method": "coroutine"
