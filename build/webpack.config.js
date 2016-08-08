@@ -140,6 +140,13 @@ webpackConfig.module.loaders = [{
   loader: 'json'
 }]
 
+// -- proto loaders
+webpackConfig.module.loaders.push({
+	test: /\.proto$/,
+	loader: "proto-loader"
+});
+
+
 // ------------------------------------
 // Style Loaders
 // ------------------------------------
