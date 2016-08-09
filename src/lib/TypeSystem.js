@@ -1,147 +1,233 @@
+import lmerge from 'lodash/merge'
 
-export const Float = Type("Float",val => {
-  if(val == undefined || val == null) return undefined;
-  let num = Number(val);
-  if (isNaN(num)){
-    throw new Error(`Failed parse float from ${JSON.stringify(val)}`)
+/*
+Type:
+  constructor()
+  default()
+  const()
+  array()
+  [...map]
+  ::__context{
+    merge()
+    default()
+    const()
+    constCheck()
+    parse()
+    resolve()
+    array()
+    name,
+    _default
+    _const
   }
-  return num;
-});
+*/
 
-export const String = Type("String",
-  (val => val!=undefined ? ""+val : undefiend),
-);
+export const BaseType = {
+  merge     : function (v,d,c){
+    return c || v || d;
+  },
 
-export const Int    = Type("Int",
-  (val => val!=undefined ? +val : undefiend ),
-);
+  default   : function (v,d,c){
+    return DefineType({
+      ...this,
+      _default : this.resolve(v,d,c),
+    });
+  },
 
-export const Bool    = Type("Bool",
-  (val => val!=undefined ? val==true : undefiend ),
-);
+  const     : function (v,c){
+    return DefineType({
+      ...this,
+      _const : this.resolve(v,undefined,c),
+    });
+  },
 
+  constCheck: function(v,c){
+    if(v != undefined && c != undefined)
+      throw new Error(`Can't override const field ${this.name}{${c}} by ${v}`);
+  },
+  
+  parse     : function (v){
+    return v;
+  },
 
+  resolve   : function (v,d,c){
+    v = this.parse(v)
+    this.constCheck(v,c)
+    return this.merge(v,d,c);
+  },
 
-export function Enum (name,type={}){
-  if(typeof name != 'string')
-    throw new Error("Expected name in enum definition");
-  function Single (key){
-      if (type[key] == undefined)
-        throw new Error(`Unknown field '${key}' in enum ${name}:{${Object.keys(type)}}`); 
-      return {
-        key,
-        val   : type[key],
-      }
-  }
-  Single.array = function _Array (...l) {
-    if (l.length == 0) l.push(0);
-    return function ResolveArray(arr,index=0){
-      let length = l[index];
-      if (length && arr.length != length)
-        throw new Error(`Wrong length for array [${length}]${name}(${JSON.stringify(arr)}); from [${l}][${index}], got ${arr.length}`)
+  array     : function(...l){
+    return _Array(this,...l)
+  },
 
-      if(l.length==(index+1)){
-        return arr.map(el=>Single(el))
-      }else {
-        return arr.map(el=>ResolveArray(el,index+1));
-      }
-    }
-  }
-  return Object.assign(
-    Single, 
-    type,
-  )
+  name      : "BaseType",
+  struct    : {},
+  _default  : undefined,
+  _const    : undefined,
+};
+
+export function DefineType (_o={},_baseType = BaseType) {
+  let _c = {..._baseType,..._o} // new context
+  delete _c.struct.array;
+  delete _c.struct.default;
+  delete _c.struct.const;
+  let type = val => _c.resolve(val,_c._default,_c._const)
+  type.prototype.__context = _c;
+  type.default  = (v)=> _c.default(v,_c._default,_c._const)
+  type.const    = (v)=> _c.const(v,_c._const)
+  type.array    = _c.array.bind(type)
+  Object.assign(type,_c.struct)
+
+  return type;
 }
 
-function Apply (type,val){
-  if(typeof type == 'function'){
-    return type(val)
-  }else if(typeof type == "object"){
-    if(typeof val != 'object')
-      throw new Error(`Wrong types: ${typeof type} != ${typeof val}
-                        in ${JSON.stringify(type)}:${JSON.stringify(val)}}`);
+export function _Array(type,...resolution){
+  type = Type(type);
+  if(resolution.length==0)
+    resolution.push(0);
+  let l = resolution.pop()
+  let array = DefineType({
+    parse : function(v){
+      if(l!=0 && v == undefined) return undefined;
+      if(v == undefined) v = [];
+      if(typeof v != "object" || v.length == "undefined")
+        throw new Error(`Expected [${l||""}]${type.prototype.__context.name}, but got ${v}:${typeof v}`)
+      if(l != 0 && v.length != l)
+        throw new Error(`Expected fixed length [->${l}]${type.prototype.__context.name} but got ${v.length}`);
+      let ret = [];
+      v.forEach(el => ret.push(type(el)))
+      return ret;
+    },
+    name : `[${l||""}]${type.prototype.__context.name}`,
+  })
+  if(resolution.length == 0)
+    return array;
+  return _Array(array,...resolution);
+}
+
+
+export function Map(name,struct = {}){
+  delete struct.array;
+  delete struct.default;
+  delete struct.const;
+  for (let key in struct){
+    struct[key] = Type(`${name}.${key}`,struct[key]);
+  }
+  let Map = DefineType({
+    name : "Map",
+    merge : function (v={},d={},c={}){
+      return lmerge(d,v,c);
+    },
+    constCheck : function (v={},c={}){
+      for (let key in c){
+        if(c[key] != undefined && v[key] != undefined)
+          throw new Error(`Can't override const field ${this.name}{${key}:${c[key]}} to ${v[key]}`)
+      }
+    },
+    parse : function (v={}){
+      delete v.array;
+      delete v.default;
+      delete v.const;
+      let _v = {...v}
       let ret = {};
-      for (let key in val){
-        if(type[key] == undefined)
-          throw new Error(`Unknown field ${key} in {${Object.keys(type)}}
-                            from ${JSON.stringify(val)}`);
-        ret[key] = Apply(type[key],val[key])
+      for (let key in this.struct){
+        ret[key] = this.struct[key](v[key])
+        delete _v[key];
+      }
+      let keys = Object.keys(_v)
+      if(keys.length){
+        throw new Error(`Unexpected fields {${keys}} in ${this.name}:{${Object.keys(this.parse())}}`);
       }
       return ret;
-  }else {
-    return val;
-  }
+    },
+    struct : struct,
+  })
+  return Map;
 }
 
-export function Type (name,type={},_default={},_const={}){
-  if(typeof name != 'string')
-    throw new Error("Expected name in type definition");
+export function Enum (name,fields=[]){
+  if(typeof fields != "object" || fields.length == 'undefined')
+    throw new Error(`Expected array in Enum:${name}, got ${fields}:${typeof fields}`)
+  let Enum = DefineType({
+    parse : function(v){
+      if(v == undefined)
+        return undefined;
+      if(fields.indexOf(v) < 0)
+        throw new Error(`Unknown enum field ${v} in ${name}:{${fields}}`)
+      return v;
+    }
+  })
+  return Enum;
+}
 
-  let fields = {};
+export function MEnum(name,fields={}){
+  let map = Map(`${name}:map`,fields)()
+  let _enum = Enum(`${name}:enum`,Object.keys(fields))
+  let MEnum = DefineType({
+    parse : function (v){
+      return _enum(v);
+    }
+  })
+  MEnum.map = DefineType({
+    parse : function (v){
+      return map[MEnum(v)];
+    }
+  })
+  return MEnum;
+}
+
+export function Type (name,definition,basetype){
+  if(typeof name != 'string'){
+    [definition,basetype] = [name,definition]
+    name = "Type"
+  }
   
-  for (let key in type){
-    if(key == "default" || key=="array" || key == "const")continue;
-    (function(key){
-      fields[key] = function(val){
-        if (_const[key]!=undefined)
-          throw new Error(`Cannot  override const field '${key}' in type ${name}:{${Object.keys(type)}}`);
-        return Apply(type[key],val);
-      }
-      fields[key].default = _const[key] || _default[key];
-      if(typeof type[key]== 'function' && fields[key].default!=undefined){
-        fields[key].default = type[key](fields[key].default)
-      }
-      if(fields[key].default == undefined)
-        fields[key].default = type[key].default
-    })(key);
+  switch (typeof definition){
+    case "function" :
+      if(definition.prototype && definition.prototype.__context)
+        return definition;
+      return DefineType({
+        name,
+        parse : definition,
+      })
+    case "object" :
+      if(basetype && basetype.prototype && basetype.prototype.__context)
+        return DefineType({name,...definition},basetype.prototype.__context)
+      do {
+        if(typeof definition.name != "string" || definition.name == "")
+          break;
+        if(typeof definition.parse != "function" || definition.parse.prototype.__context)
+          break;
+        return DefineType({name,...definition});
+      } while (false);
+      return Map(name,definition);
+    default :
+      return DefineType({name}).default(definition); 
   }
-  function Single (obj) {
-    if(typeof type == 'function'){
-      return type(obj,name,_default,_const);
-    }
-    let ret = {}
-    let check = {...fields}
-
-    for (let key in obj){
-      if(key == "default" || key=="array" || key=="const")continue;
-      if (check[key]==undefined)
-        throw new Error(`Unknown field '${key}' in type ${name}:{${Object.keys(type)}}`);
-      ret[key] = check[key](obj[key])
-      delete check[key];
-    }
-    for(let key in check)
-      if(check[key].default != undefined){
-        if(typeof check[key].default != 'function'){
-          ret[key] = check[key].default;
-        }else {
-          ret[key] = undefined;
-        }
-      }
-    return ret;
-  }
-
-  Single.array = function _Array (...l) {
-    if (l.length == 0) l.push(0);
-    return function ResolveArray(arr,index=0){
-      let length = l[index];
-      if (length && arr.length != length)
-        throw new Error(`Wrong length for array [${length}]${name}(${JSON.stringify(arr)}); from [${l}][${index}], got ${arr.length}`)
-
-      if(l.length==(index+1)){
-        return arr.map(el=>Single(el))
-      }else {
-        return arr.map(el=>ResolveArray(el,index+1));
-      }
-    }
-  }
-  Single.default = function(def={}){
-    return Type(name,type,{..._default,...def},_const);
-  }
-  Single.const = function(cnst={}){
-    return Type(name,type,_default,{..._const,...cnst});
-  }
-  return Object.assign(
-    Single,
-    fields,
-  )
 }
+
+
+export const Int = Type("Int",function(v){
+  if(v==undefined)return v;
+  let num = Number(v);
+  if (isNaN(num)){
+    throw new Error(`Failed parse Int from ${JSON.stringify(v)}:${typeof v}`)
+  }
+  return Math.floor(num);
+})
+export const Float = Type("Float",function(v){
+  if(v==undefined)return v;
+  let num = Number(v);
+  if (isNaN(num)){
+    throw new Error(`Failed parse Float from ${JSON.stringify(v)}:${typeof v}`)
+  }
+  return num;
+})
+export const String = Type("String",function(v){
+  if(v==undefined)return v;
+  if(typeof v != "string") throw new Error(`expected string, got ${v}:${typeof v}`)
+  return "";
+})
+export const Bool = Type("Bool",function(v){
+  if(v==undefined)return v;
+  return v==true
+})

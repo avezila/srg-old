@@ -8,6 +8,9 @@ import "todc-bootstrap/dist/css/todc-bootstrap.css"
 
 import "styles/core"
 
+import * as types from "lib/TypeSystem"
+global.t = types;
+
 import * as cian from "const/Cian"
 global.cian = cian;
 

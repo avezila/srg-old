@@ -1,19 +1,19 @@
 
-import {Enum,Type,Float,String,Int,Bool} from "lib/TypeSystem"
+import {MEnum,Map,Float,String,Int,Bool} from "lib/TypeSystem"
 
 
-export const ErrorType = Enum("ErrorType",{
+export const ErrorType = MEnum("ErrorType",{
   BAD_TOKEN : "ошибка авторизации",
   INTERNAL  : "ошибка на стороне сервера",
 })
 
-export const OfferType = Enum("OfferType",{
+export const OfferType = MEnum("OfferType",{
   FLAT        : "Квартира",
   COMMERCIAL  : "Коммерческая недвижимость",
 })
 
 
-export const RealtyType = Enum("RealtyType",{
+export const RealtyType = MEnum("RealtyType",{
   BUILT_IN_OFFICE     : "Встроенное офисное помещение",
   BUILT_IN_COMMERCIAL : "Встроенные торговые помещения",
   BUILT_IN_STORAGE    : "Встроенные производственно-складские помещения",
@@ -30,17 +30,17 @@ export const RealtyType = Enum("RealtyType",{
   NEW                 : "Новостройка",
 })
 
-export const EntryType = Enum("EntryType",{
+export const EntryType = MEnum("EntryType",{
   BY_PASS     : "по пропуску",
   SEPARATE    : "отдельный вход",
   FREE        : "свободный вход",
 })
 
-export const BuildingType = Enum("BuildingType",{
+export const BuildingType = MEnum("BuildingType",{
   RESIDENTIAL     : "жилое",
   NON_RESIDENTIAL : "нежилое",
 })
-export const BuildingClass = Enum("BuildingClass",{
+export const BuildingClass = MEnum("BuildingClass",{
   A     : "A",
   APLUS : "A+",
   B     : "B",
@@ -50,13 +50,13 @@ export const BuildingClass = Enum("BuildingClass",{
   D     : "D",
   DPLUS : "D+",
 })
-export const ContractType = Enum("ContractType",{
+export const ContractType = MEnum("ContractType",{
   SALE            : "продажа",
   PERMISSION      : "переуступка прав",
   DIRECT_RENT     : "прямая аренда",
   SUB_RENT        : "субаренда",
 })
-export const WallsType = Enum("WallsType",{
+export const WallsType = MEnum("WallsType",{
   PANEL               : "панельный",
   KIRPICH             : "кирпичный",
   WOODEN              : "деревянный",
@@ -65,27 +65,27 @@ export const WallsType = Enum("WallsType",{
   MONOLITH_KIRPICH    : "монолитно-кирпичный", 
 })
 
-export const FigureType = Enum("FigureType",{
+export const FigureType = MEnum("FigureType",{
   BOX     : "BOX",
   CIRCLE  : "CIRCLE",
 })
 
-export const Figure = Type("Figure",{
+export const Figure = Map("Figure",{
   type    : FigureType,
 })
 
-export const Circle = Type("Circle",{
+export const Circle = Map("Circle",{
   ...Figure.const({type:"CIRCLE"}),
   center : Float.array(2),
   radius : Float,
 })
 
-export const Box = Type("Box",{
+export const Box = Map("Box",{
   ...Figure.const({type:"BOX"}),
   box : Float.array(2,2),
 })
 
-export const Offer = Type("Offer",{
+export const Offer = Map("Offer",{
   id          : String,
   type        : OfferType,
   realtyType  : RealtyType,
@@ -99,7 +99,7 @@ export const Offer = Type("Offer",{
   price       : Int,
 })
 
-export const OfferCommercial = Type("OfferCommercial",{
+export const OfferCommercial = Map("OfferCommercial",{
   ...Offer.const({type:"COMMERCIAL"}),
   entryType     : EntryType,
   buildingType  : BuildingType,
@@ -107,32 +107,32 @@ export const OfferCommercial = Type("OfferCommercial",{
   furniture     : Bool,
   contractType  : ContractType,
   line          : Int,
-  numberOfStoreysInBuilding : Int.array(),
+  storeys       : Int.array(),
 },)
 
-export const OfferFlat = Type("OfferFlat",{
+export const OfferFlat = Map("OfferFlat",{
   ...Offer.const({type:"FLAT"}),
-  numberOfStoreysInBuilding : Int.array(),
-  wallsType                 : WallsType,
-  living                    : Float,
-  kitchen                   : Float,
+  storeys       : Int.array(),
+  wallsType     : WallsType,
+  living        : Float,
+  kitchen       : Float,
 })
 
 
-export const ComparableOffer = Type("ComparableOffer",{
+export const ComparableOffer = Map("ComparableOffer",{
   ...Offer,
 })
 
-export const ComparableOfferCommercial = Type("ComparableOfferCommercial",{
+export const ComparableOfferCommercial = Map("ComparableOfferCommercial",{
   ...OfferCommercial,
 })
 
-export const ComparableOfferFlat = Type("ComparableOfferFlat",{
+export const ComparableOfferFlat = Map("ComparableOfferFlat",{
   ...OfferFlat,
 })
 
 
-export const Context = Type("Context",{
+export const Context = Map("Context",{
   id          : String,
   favoriteIDs : String.array(),
   enviroment  : {},
@@ -142,7 +142,7 @@ export const Context = Type("Context",{
   comparable  : ComparableOffer,
 })
 
-export const Filter = Type("Filter",{
+export const Filter = Map("Filter",{
   type        : OfferType.array(),
   realtyType  : RealtyType.array(),
   price       : {
@@ -160,9 +160,19 @@ export const Filter = Type("Filter",{
     from  : Float,
     to    : Float,
   }
+},{
+  type : [],
+  realtyType : [],
+  price : {},
+  photoRequired : false,
+  date : {},
+  location : [],
+  sources  : [],
+  space    : {},
 })
 
-export const FilterCommercial  = Type("FilterCommercial",{
+
+export const FilterCommercial  = Map("FilterCommercial",{
   ...Filter.default({type:["COMMERCIAL"]}),
   entryType   : EntryType.array(),
   floor       : {
@@ -188,8 +198,10 @@ export const FilterCommercial  = Type("FilterCommercial",{
   line          : Int.array(),
   include       : String.array(),
   exclude       : String.array(),
+}).default({
+  furniture : true
 })
-export const FilterFlat  = Type("FilterFlat",{
+export const FilterFlat  = Map("FilterFlat",{
   ...Filter.default({type:["FLAT"]}),
   floor       : {
     from  : Int,
@@ -205,11 +217,11 @@ export const FilterFlat  = Type("FilterFlat",{
   },
   wallsType : WallsType.array(),
   rooms     : Int.array(),
-  livingSpace : {
+  living : {
     from : Float,
     to   : Float,
   },
-  kitchenSpace : {
+  kitchen : {
     from  : Float,
     to    : Float,
   },
@@ -219,7 +231,7 @@ export const FilterFlat  = Type("FilterFlat",{
   }
 })
 
-export const Token = Type("Token",{
+export const Token = Map("Token",{
   id  : String,
 })
 
