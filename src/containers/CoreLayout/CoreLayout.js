@@ -3,6 +3,9 @@ import React, {Component, PropTypes} from 'react'
 import Header from 'components/Header'
 import s from './CoreLayout.sass'
 
+import TestApi from 'containers/TestApi'
+import Errors from "containers/Errors"
+
 
 class CoreLayout extends Component {
   render () {
@@ -14,6 +17,7 @@ class CoreLayout extends Component {
         <div className={s.content}>
           {this.props.children}
         </div>
+        <Errors />
       </div>
     )
   }

@@ -8,11 +8,7 @@ import "todc-bootstrap/dist/css/todc-bootstrap.css"
 
 import "styles/core"
 
-import * as types from "lib/TypeSystem"
-global.t = types;
-
-import * as cian from "const/Cian"
-global.cian = cian;
+import TestApi from 'containers/TestApi'
 
 
 class App extends Component {
@@ -20,12 +16,15 @@ class App extends Component {
     routes: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired,
   }
+  
   render () {
     return (
       <Provider store={this.props.store}>
-        <ReduxRouter>
-          {this.props.routes}
-        </ReduxRouter>
+        <TestApi>
+          <ReduxRouter>
+            {this.props.routes}
+          </ReduxRouter>
+        </TestApi>
       </Provider>
     )
   }

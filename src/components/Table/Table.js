@@ -5,8 +5,8 @@ import {ProgressBar,Table as BTable} from 'react-bootstrap'
 import {Nano} from 'components'
 import s from './Table.sass'
 
-@connect(({app})=>({
-  offers : app.offers,
+@connect(({cian})=>({
+  offers : cian.offers,
 }))
 class Table extends Component {
   render () {

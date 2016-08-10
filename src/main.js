@@ -16,7 +16,7 @@ $.ajaxSetup({
 });
 
 
-const initialState = window.___INITIAL_STATE__ // for server side rendering
+const initialState = window.__INITIAL_STATE__ // for server side rendering
 const store = createStore(initialState)
 
 

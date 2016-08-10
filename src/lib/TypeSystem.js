@@ -70,7 +70,11 @@ export function DefineType (_o={},_baseType = BaseType) {
   delete _c.struct.array;
   delete _c.struct.default;
   delete _c.struct.const;
-  let type = val => _c.resolve(val,_c._default,_c._const)
+  let type = function (...v){
+    if(v.length == 0) v = undefined;
+    else if(v.length == 1) v =  v[0];
+    return _c.resolve(v,_c._default,_c._const)
+  }
   type.prototype.__context = _c;
   type.default  = (v)=> _c.default(v,_c._default,_c._const)
   type.const    = (v)=> _c.const(v,_c._const)
@@ -104,76 +108,21 @@ export function _Array(type,...resolution){
   return _Array(array,...resolution);
 }
 
-
-export function Map(name,struct = {}){
-  delete struct.array;
-  delete struct.default;
-  delete struct.const;
-  for (let key in struct){
-    struct[key] = Type(`${name}.${key}`,struct[key]);
+function DefineUndefine(_for,_from){
+  for (let key in _from){
+    if(typeof _from[key] == "object"){
+      if(typeof _for[key] != "object")
+        _for[key] = {};
+      DefineUndefine(_for[key],_from[key])
+    }else if (_for[key] == undefined && _from[key] == undefined){
+      _for[key] = undefined;
+    }
   }
-  let Map = DefineType({
-    name : "Map",
-    merge : function (v={},d={},c={}){
-      return lmerge(d,v,c);
-    },
-    constCheck : function (v={},c={}){
-      for (let key in c){
-        if(c[key] != undefined && v[key] != undefined)
-          throw new Error(`Can't override const field ${this.name}{${key}:${c[key]}} to ${v[key]}`)
-      }
-    },
-    parse : function (v={}){
-      delete v.array;
-      delete v.default;
-      delete v.const;
-      let _v = {...v}
-      let ret = {};
-      for (let key in this.struct){
-        ret[key] = this.struct[key](v[key])
-        delete _v[key];
-      }
-      let keys = Object.keys(_v)
-      if(keys.length){
-        throw new Error(`Unexpected fields {${keys}} in ${this.name}:{${Object.keys(this.parse())}}`);
-      }
-      return ret;
-    },
-    struct : struct,
-  })
-  return Map;
 }
 
-export function Enum (name,fields=[]){
-  if(typeof fields != "object" || fields.length == 'undefined')
-    throw new Error(`Expected array in Enum:${name}, got ${fields}:${typeof fields}`)
-  let Enum = DefineType({
-    parse : function(v){
-      if(v == undefined)
-        return undefined;
-      if(fields.indexOf(v) < 0)
-        throw new Error(`Unknown enum field ${v} in ${name}:{${fields}}`)
-      return v;
-    }
-  })
-  return Enum;
-}
 
-export function MEnum(name,fields={}){
-  let map = Map(`${name}:map`,fields)()
-  let _enum = Enum(`${name}:enum`,Object.keys(fields))
-  let MEnum = DefineType({
-    parse : function (v){
-      return _enum(v);
-    }
-  })
-  MEnum.map = DefineType({
-    parse : function (v){
-      return map[MEnum(v)];
-    }
-  })
-  return MEnum;
-}
+
+
 
 export function Type (name,definition,basetype){
   if(typeof name != 'string'){
@@ -206,6 +155,116 @@ export function Type (name,definition,basetype){
 }
 
 
+
+export const Enum = Type("Enum",function([name,fields={}]){
+  if(typeof fields != "object" || fields.length == 'undefined')
+    throw new Error(`Expected array in Enum:${name}, got ${fields}:${typeof fields}`)
+  let Enum = DefineType({
+    parse : function(v){
+      if(v == undefined)
+        return undefined;
+      if(fields.indexOf(v) < 0)
+        throw new Error(`Unknown enum field ${v} in ${name}:{${fields}}`)
+      return v;
+    }
+  })
+  return Enum;
+})
+
+export const MEnum = Type("MEnum",function([name,fields={}]){
+  let map = Map(`${name}:map`,fields)()
+  let _enum = Enum(`${name}:enum`,Object.keys(fields))
+  let MEnum = DefineType({
+    parse : function (v){
+      return _enum(v);
+    }
+  })
+  MEnum.map = DefineType({
+    parse : function (v){
+      return map[MEnum(v)];
+    }
+  })
+  return MEnum;
+})
+
+export const VMap = Type("VMap",function([name,struct = {}]){
+  delete struct.array;
+  delete struct.default;
+  delete struct.const;
+  for (let key in struct){
+    struct[key] = Type(`${name}.${key}`,struct[key]);
+  }
+  let VMap = DefineType({
+    name : "VMap:"+name,
+    merge : function (v={},d={},c={}){
+      let ret = lmerge({},d,v,c);
+      DefineUndefine(ret,v);
+      return ret;
+    },
+    constCheck : function (v={},c={}){
+      for (let key in c){
+        if(c[key] != undefined && v[key] != undefined)
+          throw new Error(`Can't override const field ${this.name}{${key}:${c[key]}} to ${v[key]}`)
+      }
+    },
+    parse : function (v={}){
+      delete v.array;
+      delete v.default;
+      delete v.const;
+      let ret = {...v};
+      for (let key in this.struct){
+        ret[key] = this.struct[key](v[key])
+      }
+      return ret;
+    },
+    struct : struct,
+  })
+  return VMap;
+});
+
+
+export const Map = Type("Map",function([name,struct = {}]){
+  delete struct.array;
+  delete struct.default;
+  delete struct.const;
+  for (let key in struct){
+    struct[key] = Type(`${name}.${key}`,struct[key]);
+  }
+  let Map = DefineType({
+    name : "Map:"+name,
+    merge : function (v={},d={},c={}){
+      let ret = lmerge({},d,v,c);
+      DefineUndefine(ret,v);
+      return ret;
+    },
+    constCheck : function (v={},c={}){
+      for (let key in c){
+        if(c[key] != undefined && v[key] != undefined)
+          throw new Error(`Can't override const field ${this.name}{${key}:${c[key]}} to ${v[key]}`)
+      }
+    },
+    parse : function (v={}){
+      delete v.array;
+      delete v.default;
+      delete v.const;
+      let _v = {...v}
+      let ret = {};
+      for (let key in this.struct){
+        ret[key] = this.struct[key](v[key])
+        delete _v[key];
+      }
+      let keys = Object.keys(_v)
+      if(keys.length){
+        throw new Error(`Unexpected fields {${keys}} in ${this.name}:{${Object.keys(this.parse())}}`);
+      }
+      return ret;
+    },
+    struct : struct,
+  })
+  return Map;
+})
+
+
 export const Int = Type("Int",function(v){
   if(v==undefined)return v;
   let num = Number(v);
@@ -225,8 +284,9 @@ export const Float = Type("Float",function(v){
 export const String = Type("String",function(v){
   if(v==undefined)return v;
   if(typeof v != "string") throw new Error(`expected string, got ${v}:${typeof v}`)
-  return "";
+  return ""+v;
 })
+
 export const Bool = Type("Bool",function(v){
   if(v==undefined)return v;
   return v==true

@@ -1,12 +1,12 @@
 import {handleActions} from "redux-actions"
 
 import * as actions from 'actions'
+import {Filter,Error} from 'const/Cian'
 
-
-export const app = handleActions({
+export const cian = handleActions({
   [actions.filterChange]: (state, action) =>({
     ...state,
-    filter : action.payload.filter,
+    filter : Filter(action.payload.filter),
   }),
   [actions.offerRequest]: (state, action) =>({
     ...state,
@@ -18,9 +18,16 @@ export const app = handleActions({
   [actions.offerError]: (state, action) => ({
     ...state,
   }),
+  [actions.addError] : (state,action) => ({
+    ...state,
+    errors : [action.payload.error,...state.errors],
+  }),
+  [actions.removeError] : (state,action) => ({
+    ...state,
+    errors : state.errors.filter((el,i)=> action.payload.id != i),
+  })
 }, {
-  filter : {
-    input : "",
-  },
+  filter : Filter(),
   offers : [],
+  errors : [],
 });

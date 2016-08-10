@@ -1,10 +1,11 @@
 
-import {MEnum,Map,Float,String,Int,Bool} from "lib/TypeSystem"
+import {MEnum,VMap,Map,Float,String,Int,Bool} from "lib/TypeSystem"
 
 
 export const ErrorType = MEnum("ErrorType",{
-  BAD_TOKEN : "ошибка авторизации",
-  INTERNAL  : "ошибка на стороне сервера",
+  BAD_TOKEN : "Ошибка авторизации",
+  INTERNAL  : "Ошибка на стороне сервера",
+  FETCH     : "Ошибка при выполнении запроса к серверу",
 })
 
 export const OfferType = MEnum("OfferType",{
@@ -69,6 +70,11 @@ export const FigureType = MEnum("FigureType",{
   BOX     : "BOX",
   CIRCLE  : "CIRCLE",
 })
+export const Error = Map("Error",{
+  type  : ErrorType,
+  msg   : String,
+  e     : undefined,
+})
 
 export const Figure = Map("Figure",{
   type    : FigureType,
@@ -85,7 +91,7 @@ export const Box = Map("Box",{
   box : Float.array(2,2),
 })
 
-export const Offer = Map("Offer",{
+export const Offer = VMap("Offer",{
   id          : String,
   type        : OfferType,
   realtyType  : RealtyType,
@@ -108,7 +114,7 @@ export const OfferCommercial = Map("OfferCommercial",{
   contractType  : ContractType,
   line          : Int,
   storeys       : Int.array(),
-},)
+})
 
 export const OfferFlat = Map("OfferFlat",{
   ...Offer.const({type:"FLAT"}),
@@ -119,7 +125,7 @@ export const OfferFlat = Map("OfferFlat",{
 })
 
 
-export const ComparableOffer = Map("ComparableOffer",{
+export const ComparableOffer = VMap("ComparableOffer",{
   ...Offer,
 })
 
@@ -142,7 +148,7 @@ export const Context = Map("Context",{
   comparable  : ComparableOffer,
 })
 
-export const Filter = Map("Filter",{
+export const Filter = VMap("Filter",{
   type        : OfferType.array(),
   realtyType  : RealtyType.array(),
   price       : {
@@ -159,8 +165,8 @@ export const Filter = Map("Filter",{
   space     : {
     from  : Float,
     to    : Float,
-  }
-},{
+  },
+}).default({
   type : [],
   realtyType : [],
   price : {},
@@ -235,3 +241,63 @@ export const Token = Map("Token",{
   id  : String,
 })
 
+
+export const Rpc = Map("CianRpc",{
+  getContext : {
+    request : {
+      token : String,
+    },
+    response : {
+      context : Context,
+      error   : Error,
+    },
+  },
+  getOffers : {
+    request : {
+      token : String,
+      offerIDs : String.array(),
+    },
+    response : {
+      offers  : Offer.array(),
+      error   : Error,
+    },
+  },
+  filterOffers : {
+    request : {
+      token   : String,
+      filter  : Filter,
+    },
+    response : {
+      offerIDs  : String.array(),
+      error     : Error,
+    },
+  },
+  updateContext : {
+    request : {
+      token   : String,
+      context : Context,
+    },
+    response : {
+      error   : Error,
+    },
+  },
+  addOfferToReport : {
+    request : {
+      token   : String,
+      offerID : String,
+    },
+    response : {
+      error   : Error,
+    },
+  },
+  ymaps : {
+    request : {
+      token : String,
+      query : String,
+    },
+    response : {
+      result  : String,
+      error   : Error,
+    },
+  },
+})

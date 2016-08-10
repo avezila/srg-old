@@ -7,8 +7,8 @@ import {filterChange} from 'actions'
 import s from './Filter.sass'
 
 
-@connect(state =>({
-  filter : state.app.filter,
+@connect(({cian}) =>({
+  filter : cian.filter,
 }), {filterChange})
 class Filter extends Component {
   onChange (e){

@@ -12,6 +12,8 @@ async function Load(filter) {
   })
 }
 
+
+
 function * offerRequest(action){
    try {
       const offers = yield call(Load, action.payload.filter);
