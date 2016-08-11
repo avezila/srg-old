@@ -30,7 +30,7 @@ class Errors extends Component {
             {(it.e && (it.e.message || it.e.stack))? (
               <Collapse in={this.state.id===i}>
                 <pre className={s.item_inner}>
-                 {it.e.stack}
+                 {`${it.e.stack}`}
                 </pre>
               </Collapse>
             ): undefined }

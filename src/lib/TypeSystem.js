@@ -163,6 +163,8 @@ export const Enum = Type("Enum",function([name,fields={}]){
     parse : function(v){
       if(v == undefined)
         return undefined;
+      if(v == "*")
+        return fields;
       if(fields.indexOf(v) < 0)
         throw new Error(`Unknown enum field ${v} in ${name}:{${fields}}`)
       return v;
@@ -181,6 +183,10 @@ export const MEnum = Type("MEnum",function([name,fields={}]){
   })
   MEnum.map = DefineType({
     parse : function (v){
+      if(v == undefined)
+        return undefined
+      if(v == "*")
+        return fields;
       return map[MEnum(v)];
     }
   })
@@ -264,6 +270,40 @@ export const Map = Type("Map",function([name,struct = {}]){
   return Map;
 })
 
+export const EMap = Type("EMap",function([name,struct = {}]){
+  delete struct.array;
+  delete struct.default;
+  delete struct.const;
+  for (let key in struct){
+    struct[key] = Type(`${name}.${key}`,struct[key]);
+  }
+  let EMap = DefineType({
+    name : "EMap:"+name,
+    merge : function (v={},d={},c={}){
+      let ret = lmerge({},d,v,c);
+      DefineUndefine(ret,v);
+      return ret;
+    },
+    constCheck : function (v={},c={}){
+      for (let key in c){
+        if(c[key] != undefined && v[key] != undefined)
+          throw new Error(`Can't override const field ${this.name}{${key}:${c[key]}} to ${v[key]}`)
+      }
+    },
+    parse : function (v={}){
+      delete v.array;
+      delete v.default;
+      delete v.const;
+      let ret = {};
+      for (let key in this.struct){
+        ret[key] = this.struct[key](v[key])
+      }
+      return ret;
+    },
+    struct : struct,
+  })
+  return EMap;
+})
 
 export const Int = Type("Int",function(v){
   if(v==undefined)return v;

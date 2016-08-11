@@ -44,7 +44,12 @@ for (let name in Cian.Rpc()){
       if(result.error.type){
         result.error.msg = result.error.msg || cian.ErrorType.map(result.error.type)
         result.error.msg += ` in ${name}()`;
-        result.error.e = result.error.e || new Error(`Failed fetch api ${name} with request:${JSON.stringify(request),null,2}`)
+        let msg = `Failed fetch api ${name} with request:${JSON.stringify(Cian.Rpc[name].request(request),null,2)}`;
+        if (result.e != undefined){
+          result.error.e.message = `${msg}\n\n${result.error.e.message}`;
+        }else {
+          result.error.e = new Error(msg)
+        }
       }
       return result;
     }

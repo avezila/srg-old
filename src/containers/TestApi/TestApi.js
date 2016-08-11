@@ -35,7 +35,6 @@ class TestApi extends Component {
     }
   }
   render (){
-    console.log(this.props)
     return Children.only(this.props.children);
   }
 }

@@ -3,7 +3,6 @@ import React, {Component, PropTypes} from 'react'
 import Header from 'components/Header'
 import s from './CoreLayout.sass'
 
-import TestApi from 'containers/TestApi'
 import Errors from "containers/Errors"
 
 

@@ -17,7 +17,7 @@ export default (initialState = {}) => {
   let create_history = historyPush? createHistory : createHashHistory;
   let historyOptions = {
     queryKey  : "_",
-    keyLength :1
+    keyLength : 1,
   }
   if (!historyPush) {
     if(window.location.hash == "")
