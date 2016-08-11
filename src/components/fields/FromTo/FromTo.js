@@ -3,6 +3,7 @@ import {FormGroup,FormControl,InputGroup} from "react-bootstrap"
 
 import s from "./FromTo.sass"
 
+let Addon = InputGroup.Addon
 
 class FromTo extends Component {
   onChange (select){
@@ -12,11 +13,11 @@ class FromTo extends Component {
     return (
       <FormGroup className={s.form_group}>
         <InputGroup className={s.input_group}>
-          <InputGroup.Addon>от</InputGroup.Addon>
+          <Addon>от</Addon>
           <FormControl type="text" />
         </InputGroup>
         <InputGroup className={s.input_group}>
-          <InputGroup.Addon>до</InputGroup.Addon>
+          <Addon>до</Addon>
           <FormControl type="text" />
         </InputGroup>
       </FormGroup>
