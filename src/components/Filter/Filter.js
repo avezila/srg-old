@@ -7,6 +7,7 @@ import {Nano} from 'components'
 import {filterChange} from 'actions'
 import s from './Filter.sass'
 
+import _ from "lodash"
 
 import {Multiselect,FromTo,Checkbox,Words} from "components/fields"
 
@@ -15,12 +16,13 @@ import {Multiselect,FromTo,Checkbox,Words} from "components/fields"
   filter : cian.filter,
 }), {filterChange})
 class Filter extends Component {
-  onChange (filter){
-    console.log(filter)
-    //this.props.filterChange({filter:{input:e.target.value}})
-  }
-  onSelect (...args){
-    console.log(...args)
+  onChange (field,value){
+    let nf = {
+      ...this.props.filter,
+    }
+    _.set(nf,field,value);
+
+    this.props.filterChange(nf)
   }
   SubTitle  (title,key){
     return (
@@ -29,40 +31,40 @@ class Filter extends Component {
       </div>
     )
   }
-  Multiselect  (m,key){
+  Multiselect  (val,key){
     return (
       <div key={"m:"+key} className={s.row}>
-        <Multiselect def={m} onChange={::this.onChange.bind(key)} />
+        <Multiselect value={val} onChange={this.onChange.bind(this,key)} />
       </div>
     )
   }
-  FromTo  (ft,key){
+  FromTo  (val,key){
     return (
       <div key={"ft:"+key} className={s.row}>
-        <FromTo {...ft} onChange={::this.onChange.bind(key)} />
+        <FromTo value={val} onChange={this.onChange.bind(this,key)} />
       </div>
     )
   }
-  Checkbox (cb,key){
+  Checkbox (val,key){
     return (
       <div key={"cb:"+key} className={s.row}>
-        <Checkbox {...cb} onChange={::this.onChange.bind(key)} />
+        <Checkbox value={val} onChange={this.onChange.bind(this,key)} />
       </div>
     )
   }
-  Words (w,key){
+  Words (val,key){
     return (
       <div key={"w:"+key} className={s.row}>
-        <Words {...w} onChange={::this.onChange.bind(key)} />
+        <Words value={val} onChange={this.onChange.bind(this,key)} />
       </div>
     )
   }
   render () {
-    let fields = cian.FilterToFields({type:["FLAT","COMMERCIAL"]})
+    let fields = cian.FilterToFields(this.props.filter)
     let form = [];
-    console.log(fields)
+    
     for (let key in fields){
-      let o = fields[key];
+      let o = _.get(fields,key)//fields[key];
       if(o.hide)
         continue;
       if(o.title)
@@ -76,15 +78,10 @@ class Filter extends Component {
       else if (o.words)
         form.push(this.Words(o.words,key));
     }
-    console.log(form)
+    
 
     return (
       <Nano className={s.root}>
-        <FormControl
-          autoFocus={true}
-          type="text"
-          value={this.props.filter.input}
-          onChange={::this.onChange} />
         {form}
       </Nano>
     )

@@ -5,12 +5,17 @@ import s from "./Checkbox.sass"
 
 
 class Checkbox extends Component {
-  onChange (select){
-    this.props.onChange(select)
+  onChange (e){
+    this.props.onChange(e.target.checked || undefined)
   }
   render () {
     return (
-      <RBCheckbox className={s.root}><div className={s.title}>{this.props.title}</div></RBCheckbox>
+      <RBCheckbox 
+        checked={this.props.value.data == true}
+        onChange={::this.onChange}
+        className={s.root}>
+        <div className={s.title}>{this.props.value.title}</div>
+      </RBCheckbox>
     )
   }
 }

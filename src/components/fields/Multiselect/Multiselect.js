@@ -4,8 +4,17 @@ import RBMultiselect from 'react-bootstrap-multiselect'
 
 
 class Multiselect extends Component {
-  onChange (select){
-    this.props.onChange(select)
+  onChange (option, checked, select){
+    let fields = {};
+    for (let obj of this.props.value.data)
+      if(obj.selected)
+        fields[obj.value] = true;
+    if(checked)
+      fields[option.val()] = true
+    else
+      delete fields[option.val()]
+    fields = Object.keys(fields)
+    this.props.onChange(fields)
   }
   render () {
     return (
@@ -15,8 +24,8 @@ class Multiselect extends Component {
         nSelectedText=" выбрано"
         allSelectedText="Все"
         numberDisplayed={2}
-        {...this.props}
-        data={this.props.def.data}
+        //{...this.props}
+        data={this.props.value.data}
         onChange={::this.onChange}
         ref="select"
         multiple />

@@ -200,11 +200,6 @@ export const Filter = VMap("Filter",{
     from  : Float,
     to    : Float,
   },
-})
-
-
-export const FilterCommercial  = EMap("FilterCommercial",{
-  ...Filter.default({type:["COMMERCIAL"]}),
   entryType   : EntryType.array(),
   floor       : {
     from  : Int,
@@ -229,27 +224,7 @@ export const FilterCommercial  = EMap("FilterCommercial",{
   line          : Int.array(),
   include       : String.array(),
   exclude       : String.array(),
-})
-
-export const FilterFlat  = EMap("FilterFlat",{
-  ...Filter.default({type:["FLAT"]}),
-  floor       : {
-    from  : Int,
-    to    : Int, 
-  },
-  floorHint : {
-    notFirst : Bool,
-    notLast  : Bool,
-  },
-  storeys   : {
-    from    : Int,
-    to      : Int,
-  },
   wallsType : WallsType.array(),
-  rooms         : {
-    from  : Int,
-    to    : Int,
-  },
   living : {
     from : Float,
     to   : Float,
@@ -263,6 +238,17 @@ export const FilterFlat  = EMap("FilterFlat",{
     to    : Int,
   },
 })
+
+
+// export const FilterCommercial  = EMap("FilterCommercial",{
+//   ...Filter.default({type:["COMMERCIAL"]}),
+  
+// })
+
+// export const FilterFlat  = EMap("FilterFlat",{
+//   ...Filter.default({type:["FLAT"]}),
+  
+// })
 
 
 export const LineType = MEnum("LineType",{
@@ -285,30 +271,28 @@ function multiselectFromMEnum (en,arr){
 }
 export const FilterToFields = Type("FilterFields",(o)=> {
   o = Filter(o)
-  let flat = FilterFlat(o.type.indexOf("FLAT")<0? {} : o)
-  let commercial = FilterCommercial(o.type.indexOf("COMMERCIAL")<0? {} : o)
-  let merged = {...o,...flat,...commercial};
+
   return {
     // Offer
     type  : {
-      title : "Вид",
+      title : "Тип объекта",
       multiselect : {
         data : multiselectFromMEnum(OfferType,o.type),
       }
     },
     realtyType  : {
-      title : "Тип объекта",
+      title : "Подтип объекта",
       multiselect : {
         data : multiselectFromMEnum(RealtyTypeFilter(o.type),o.realtyType),
-      }
+      },
+      hide : o.type.indexOf("FLAT")<0 && o.type.indexOf("COMMERCIAL")<0,
     },
     price : {
-      title : "Цена",
+      title : "Цена, руб.",
       fromto : {
         data    : o.price,
         type : "input",
         pattern : 'int',
-        postfix : "руб.", 
       }
     },
     photoRequired : {
@@ -320,7 +304,7 @@ export const FilterToFields = Type("FilterFields",(o)=> {
     date : {
       title : "Дата объявления",
       fromto : {
-        data    : o.price,
+        data    : o.date,
         type : "date", 
       }
     },
@@ -331,19 +315,18 @@ export const FilterToFields = Type("FilterFields",(o)=> {
       }
     },
     space : {
-      title : "Общая площадь",
+      title : "Общая площадь, м.кв.",
       fromto : {
         data    : o.space,
         type    : "input",
-        pattern : 'metter',
-        postfix : "м.кв.", 
+        pattern : 'meter',
       }
     },
     // Commercial or Flat
     floor : {
       title : "Этаж",
       fromto : {
-        data    : merged.floor,
+        data    : o.floor,
         type    : "input",
         pattern : 'int',
       },
@@ -352,21 +335,21 @@ export const FilterToFields = Type("FilterFields",(o)=> {
     "floorHint.notFirst" : {
       checkbox : {
         title : "Не первый",
-        data : merged.floorHint.notFirst,
+        data : o.floorHint.notFirst,
       },
       hide : o.type.indexOf("FLAT")<0 && o.type.indexOf("COMMERCIAL")<0,
     },
     "floorHint.notLast" : {
       checkbox : {
         title : "Не последний",
-        data : merged.floorHint.notLast,
+        data : o.floorHint.notLast,
       },
       hide : o.type.indexOf("FLAT")<0 && o.type.indexOf("COMMERCIAL")<0,
     },
     storeys : {
       title : "Количество этажей",
       fromto : {
-        data    : merged.storeys,
+        data    : o.storeys,
         type    : "input",
         pattern : 'int',
       },
@@ -375,7 +358,7 @@ export const FilterToFields = Type("FilterFields",(o)=> {
     rooms : {
       title : "Количество комнат",
       fromto : {
-        data    : merged.rooms,
+        data    : o.rooms,
         type    : "input",
         pattern : 'int',
       },
@@ -385,56 +368,56 @@ export const FilterToFields = Type("FilterFields",(o)=> {
     entryType : {
       title : "Тип объекта",
       multiselect : {
-        data : multiselectFromMEnum(EntryType,commercial.entryType), 
+        data : multiselectFromMEnum(EntryType,o.entryType), 
       },
       hide : o.type.indexOf("COMMERCIAL")<0,
     },
     buildingType : {
       title : "Тип здания",
       multiselect : {
-        data : multiselectFromMEnum(BuildingType,commercial.buildingType), 
+        data : multiselectFromMEnum(BuildingType,o.buildingType), 
       },
       hide : o.type.indexOf("COMMERCIAL")<0,
     },
     buildingClass : {
       title : "Класс здания",
       multiselect : {
-        data : multiselectFromMEnum(BuildingClass,commercial.buildingClass), 
+        data : multiselectFromMEnum(BuildingClass,o.buildingClass), 
       },
       hide : o.type.indexOf("COMMERCIAL")<0,
     },
     furniture : {
       checkbox : {
         title : "Наличие мебели",
-        data : merged.floorHint.furniture,
+        data : o.furniture,
       },
       hide : o.type.indexOf("COMMERCIAL")<0,
     },
     contractType : {
       title : "Тип договора",
       multiselect : {
-        data : multiselectFromMEnum(ContractType,commercial.contractType), 
+        data : multiselectFromMEnum(ContractType,o.contractType), 
       },
       hide : o.type.indexOf("COMMERCIAL")<0,
     },
     line : {
       title : "Линия домов",
       multiselect : {
-        data : multiselectFromMEnum(LineType,commercial.line),
+        data : multiselectFromMEnum(LineType,o.line),
       },
       hide : o.type.indexOf("COMMERCIAL")<0,
     },
     include : {
       title : "Только со словами",
       words : {
-        data : commercial.include,
+        data : o.include,
       },
       hide : o.type.indexOf("COMMERCIAL")<0,
     },
     exclude : {
       title : "Исключить слова",
       words : {
-        data : commercial.exclude,
+        data : o.exclude,
       },
       hide : o.type.indexOf("COMMERCIAL")<0,
     },
@@ -442,37 +425,34 @@ export const FilterToFields = Type("FilterFields",(o)=> {
     wallsType : {
       title : "Тип дома",
       multiselect : {
-        data : multiselectFromMEnum(WallsType,flat.wallsType), 
+        data : multiselectFromMEnum(WallsType,o.wallsType), 
       },
       hide : o.type.indexOf("FLAT")<0,
     },
     living : {
-      title : "Жилая площадь",
+      title : "Жилая площадь, м.кв.",
       fromto : {
-        data    : flat.living,
+        data    : o.living,
         type    : "input",
-        pattern : 'metter',
-        postfix : "м.кв.", 
+        pattern : 'meter',
       },
       hide : o.type.indexOf("FLAT")<0,
     },
     kitchen : {
-      title : "Площадь кухни",
+      title : "Площадь кухни, м.кв.",
       fromto : {
-        data    : flat.kitchen,
+        data    : o.kitchen,
         type    : "input",
-        pattern : 'metter',
-        postfix : "м.кв.", 
+        pattern : 'meter',
       },
       hide : o.type.indexOf("FLAT")<0,
     },
     pricePerMeter : {
-      title : "Цена за метр",
+      title : "Цена за метр, руб.",
       fromto : {
-        data    : flat.pricePerMeter,
+        data    : o.pricePerMeter,
         type : "input",
         pattern : 'int',
-        postfix : "руб.", 
       }
     },
   }

@@ -6,7 +6,7 @@ import {Filter,Error} from 'const/Cian'
 export const cian = handleActions({
   [actions.filterChange]: (state, action) =>({
     ...state,
-    filter : Filter(action.payload.filter),
+    filter : Filter(action.payload),
   }),
   [actions.offerRequest]: (state, action) =>({
     ...state,

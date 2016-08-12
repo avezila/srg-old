@@ -130,7 +130,7 @@ var babelSettings = {
 }
 webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
-  exclude : /(?=.*\b(node_modules)\b)(?!.*\b(react-router|redux-router|redux-saga)\b)(.+)/i,
+  exclude : /(?=.*\b(node_modules)\b)(?!.*\b(react-router|redux-router|redux-saga|react-reinput)\b)(.+)/i,
   loaders: [
     'babel?'+JSON.stringify(babelSettings),
   ]
