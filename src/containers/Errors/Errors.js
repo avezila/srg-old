@@ -5,7 +5,14 @@ import {Alert,Panel,Accordion,Well,Collapse} from "react-bootstrap"
 import {Nano} from 'components'
 import {removeError} from 'actions'
 import s from './Errors.sass'
-import StackTrace from "stacktrace-js"
+if(__DEV__) 
+  var StackTrace = require("stacktrace-js"); // dont work in ie8 cs source-map getters
+else
+  var StackTrace = {
+    fromError : function(){
+      return Promise.resolve([]);
+    }
+  }
 
 
 
@@ -38,6 +45,7 @@ class Errors extends Component {
               this.stack[key] = stackframes.map(function(sf) {
                 return sf.toString();
               }).join('\n');
+              console.error(this.stack[key]);
               this.forceUpdate();
             }.bind(this,stack,it.e));
           }.bind(this,it,stack),100);

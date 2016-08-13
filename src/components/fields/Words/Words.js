@@ -3,7 +3,7 @@ import {FormGroup,FormControl,InputGroup} from "react-bootstrap"
 
 import "./ReactTags.scss"
 import s from "./Words.sass"
-import { WithContext as ReactTags } from 'react-tag-input';
+import { WithContext as ReactTags } from 'react-tag-input/lib/ReactTags';
 
 
 class Words extends Component {

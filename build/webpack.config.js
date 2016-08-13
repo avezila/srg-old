@@ -107,7 +107,7 @@ if (!__TEST__) {
 // JavaScript / JSON
 var babelSettings = {
   cacheDirectory: true,
-  presets: ['es2015', 'react', 'stage-0'],
+  presets: ['es2015-loose', 'react', 'stage-0'],
   plugins: [
     //['transform-es3-member-expression-literals',{loose:false}],
     //['transform-es3-property-literals',{loose:false}],
@@ -130,7 +130,7 @@ var babelSettings = {
 }
 webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
-  exclude : /(?=.*\b(node_modules)\b)(?!.*\b(react-router|redux-router|redux-saga|react-reinput)\b)(.+)/i,
+  exclude : /(?=.*\b(node_modules)\b)(?!.*\b(react-router|redux-router|redux-saga|react-reinput|react-bootstrap-multiselect|react-tag-input|reat-bootstrap-datetimepicker|react-tag-input|react-dnd-html5-backend)\b)(.+)/i,
   loaders: [
     'babel?'+JSON.stringify(babelSettings),
   ]

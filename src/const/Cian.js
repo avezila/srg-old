@@ -170,7 +170,7 @@ export const ComparableOfferFlat = Map("ComparableOfferFlat",{
 export const Context = Map("Context",{
   id          : String,
   favoriteIDs : String.array(),
-  enviroment  : {},
+  enviroment  : String,
   reportLink  : String,
   modified    : String,
   created     : String,
@@ -182,7 +182,7 @@ export const SourcesType = MEnum("SourcesType",{
   "cian.ru" : "Циан",
 })
 
-export const Filter = VMap("Filter",{
+export const Filter = Map("Filter",{
   type        : OfferType.array(),
   realtyType  : RealtyType.array(),
   price       : {
@@ -517,7 +517,7 @@ export const Rpc = Map("CianRpc",{
       query : String,
     },
     response : {
-      result  : String,
+      response  : undefined,
       error   : Error,
     },
   },

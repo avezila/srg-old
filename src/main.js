@@ -11,9 +11,14 @@ require('babel-runtime/core-js/promise').default = BlueBird;
 // Global jQuery
 import $ from 'jquery'
 global.$ = global.jQuery = $
+import "jQuery-ajaxTransport-XDomainRequest"
+
 $.ajaxSetup({
   cache: true
 });
+
+//$.support.cors = true;
+//window.__disableNativeFetch = true
 
 
 const initialState = window.__INITIAL_STATE__ // for server side rendering

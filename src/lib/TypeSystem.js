@@ -21,6 +21,13 @@ Type:
   }
 */
 
+function clear (v){
+  for (let key in v)
+    if(key.match(/^__/) || ["array","default","const"].indexOf(key)>=0)
+      delete v[key];
+  return v;
+}
+
 export const BaseType = {
   merge     : function (v,d,c){
     return c || v || d;
@@ -67,9 +74,7 @@ export const BaseType = {
 
 export function DefineType (_o={},_baseType = BaseType) {
   let _c = {..._baseType,..._o} // new context
-  delete _c.struct.array;
-  delete _c.struct.default;
-  delete _c.struct.const;
+  clear(_c.struct)
   let type = function (...v){
     if(v.length == 0) v = undefined;
     else if(v.length == 1) v =  v[0];
@@ -194,9 +199,8 @@ export const MEnum = Type("MEnum",function([name,fields={}]){
 })
 
 export const VMap = Type("VMap",function([name,struct = {}]){
-  delete struct.array;
-  delete struct.default;
-  delete struct.const;
+  clear(struct)
+
   for (let key in struct){
     struct[key] = Type(`${name}.${key}`,struct[key]);
   }
@@ -214,9 +218,7 @@ export const VMap = Type("VMap",function([name,struct = {}]){
       }
     },
     parse : function (v={}){
-      delete v.array;
-      delete v.default;
-      delete v.const;
+      clear(v)
       let ret = {...v};
       for (let key in this.struct){
         ret[key] = this.struct[key](v[key])
@@ -230,9 +232,7 @@ export const VMap = Type("VMap",function([name,struct = {}]){
 
 
 export const Map = Type("Map",function([name,struct = {}]){
-  delete struct.array;
-  delete struct.default;
-  delete struct.const;
+  clear(struct)
   for (let key in struct){
     struct[key] = Type(`${name}.${key}`,struct[key]);
   }
@@ -250,9 +250,8 @@ export const Map = Type("Map",function([name,struct = {}]){
       }
     },
     parse : function (v={}){
-      delete v.array;
-      delete v.default;
-      delete v.const;
+      clear(v)
+      
       let _v = {...v}
       let ret = {};
       for (let key in this.struct){
@@ -271,9 +270,7 @@ export const Map = Type("Map",function([name,struct = {}]){
 })
 
 export const EMap = Type("EMap",function([name,struct = {}]){
-  delete struct.array;
-  delete struct.default;
-  delete struct.const;
+  clear(struct)
   for (let key in struct){
     struct[key] = Type(`${name}.${key}`,struct[key]);
   }
@@ -291,9 +288,7 @@ export const EMap = Type("EMap",function([name,struct = {}]){
       }
     },
     parse : function (v={}){
-      delete v.array;
-      delete v.default;
-      delete v.const;
+      clear(v)
       let ret = {};
       for (let key in this.struct){
         ret[key] = this.struct[key](v[key])
