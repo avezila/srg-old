@@ -108,6 +108,7 @@
     "event-listener-polyfill": "github:ie-fix/event-listener-polyfill",
     "extract-text-webpack-plugin": "^1.0.0",
     "fetch-ie8": "^1.4.3",
+    "fetch-jsonp": "^1.0.1",
     "file-loader": "^0.9.0",
     "fs-extra": "^0.30.0",
     "history": "^2.1.2",

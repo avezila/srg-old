@@ -45,15 +45,17 @@ class TestApi extends Component {
   }
   async TestApi(){
     for(let key in Api){
-      let request = {
-        token:"eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImFkc2FkcyIsImV4cCI6OTAwMDAwMTQ3MDgzMjc5N30.nARQ90Cf0nJqZFFp3a-LN9HY9sqb6m2c6cA1KQarUXE",
-        ...(requests[key]||{}),
-      };
-      let result = await Api[key](request)
-      console.log(`${key}() `,result);
-      if(result.error.type){
-        this.props.addError({error : result.error})
-      }
+      (async function (key){
+        let request = {
+          token:"eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImFkc2FkcyIsImV4cCI6OTAwMDAwMTQ3MDgzMjc5N30.nARQ90Cf0nJqZFFp3a-LN9HY9sqb6m2c6cA1KQarUXE",
+          ...(requests[key]||{}),
+        };
+        let result = await Api[key](request)
+        console.log(`${key}() `,result);
+        if(result.error.type){
+          this.props.addError({error : result.error})
+        }
+      }).bind(this,key)().done()
     }
   }
   render (){

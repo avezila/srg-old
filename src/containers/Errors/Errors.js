@@ -1,76 +1,62 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 import {connect} from 'react-redux'
-import {Alert,Panel,Accordion,Well,Collapse} from "react-bootstrap"
 
-import {Nano} from 'components'
 import {removeError} from 'actions'
 import s from './Errors.sass'
-if(__DEV__) 
-  var StackTrace = require("stacktrace-js"); // dont work in ie8 cs source-map getters
-else
-  var StackTrace = {
-    fromError : function(){
-      return Promise.resolve([]);
-    }
-  }
 
+import ErrorItem from "./ErrorItem"
 
 
 @connect(({cian}) =>({
   errors : cian.errors,
 }), {removeError})
 class Errors extends Component {
-  constructor(...args) {
-    super(...args);
-    this.stack = {};
-    this.state = {};
-  }
-  handleAlertDismiss (i){
-    this.props.removeError({id:i})
-  }
-
-  render () {
-    let errs = [];
-    for(let i = 0; i < this.props.errors.length;i++){
-      let it = this.props.errors[i];
-      let stack = "";
-      if (it&&it.e&&it.e.stack){
-        stack = ""+it.e.stack;
-        if(this.stack[stack])
-          stack = this.stack[stack];
-        else if(this.stack[stack]!==false){
-          this.stack[stack] = false;
-          setTimeout(function(it,stack){
-            StackTrace.fromError(it.e).then(function(key,e,stackframes){
-              this.stack[key] = stackframes.map(function(sf) {
-                return sf.toString();
-              }).join('\n');
-              console.error(this.stack[key]);
-              this.forceUpdate();
-            }.bind(this,stack,it.e));
-          }.bind(this,it,stack),100);
-        }
-        stack = it.e.message+"\n\n"+stack; 
-      }
-      errs.push(
-        <Alert className={s.item} key={i} bsStyle="danger" onDismiss={this.handleAlertDismiss.bind(this,i)}>
-          <div className={s.item_title} onClick={()=> this.setState({ id: this.state.id!==i && i })}>
-          <strong>{(it.type||"") + " ERROR"}</strong> {it.msg ||""}
-          </div>
-          {(it.e && (it.e.message || it.e.stack))? (
-            <Collapse in={this.state.id===i}>
-              <pre className={s.item_inner}>
-              {stack}
-              </pre>
-            </Collapse>
-          ): undefined }
-        </Alert>
-      );
+  constructor (props){
+    super(props)
+    this.state = {
+      show : false,
     }
-
+    this.times = {}
+  }
+  onClick  (id){
+    this.times[id] = 60*1000+new Date().getTime()
+    this.setState({
+      show : this.state.show !==id && id,
+    })
+  }
+  onRemove (id){
+    this.props.removeError({id})
+  }
+  onTimer (){
+    if(this.props.errors.length == 0)
+      return;
+    let next = Infinity;
+    let time = new Date().getTime();
+    this.props.errors.map(item=>{
+      let itime = this.times[item.id] || item.time;
+      if(itime < time){
+        this.onRemove(item.id);
+        delete this.times[item.id]
+      } else if(itime < next)
+        next = itime;
+    })
+    if(next != Infinity)
+      this.timer = setTimeout(::this.onTimer,next-time);
+    else
+      this.timer = undefined;
+  }
+  render () {
+    if(!this.timer)
+      this.onTimer();
     return (
       <div className={s.root}>
-        {errs}
+        {this.props.errors.map(item=>(
+          <ErrorItem {...item} 
+            key={item.id}
+            onClick={::this.onClick} 
+            onRemove={::this.onRemove}
+            show={this.state.show===item.id} />
+        ))}
       </div>
     )
   }

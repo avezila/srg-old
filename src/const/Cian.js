@@ -262,12 +262,15 @@ export const LineType = MEnum("LineType",{
   9 : 9,
   10 : 10,
 })
+
 function multiselectFromMEnum (en,arr){
-  return en("*").map(key=>({
+  let ret = en("*").map(key=>({
     label     : en.map(key),
     value     : key,
-    selected  : arr.indexOf(key) >= 0,
+    selected  : arr.map(v=>""+v).indexOf(key) >= 0,
   }))
+  console.log(ret)
+  return ret;
 }
 export const FilterToFields = Type("FilterFields",(o)=> {
   o = Filter(o)
