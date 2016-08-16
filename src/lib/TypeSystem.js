@@ -21,6 +21,14 @@ Type:
   }
 */
 
+const NO_THROW = true;
+
+function _throw (e){
+  if(NO_THROW)
+    return console.error(e.stack || e.message);
+  throw e;
+}
+
 function clear (v){
   for (let key in v)
     if(key.match(/^__/) || ["array","default","const"].indexOf(key)>=0)
@@ -49,7 +57,7 @@ export const BaseType = {
 
   constCheck: function(v,c){
     if(v != undefined && c != undefined)
-      throw new Error(`Can't override const field ${this.name}{${c}} by ${v}`);
+      _throw(new Error(`Can't override const field ${this.name}{${c}} by ${v}`));
   },
   
   parse     : function (v){
@@ -99,9 +107,9 @@ export function _Array(type,...resolution){
       if(l!=0 && v == undefined) return undefined;
       if(v == undefined) v = [];
       if(typeof v != "object" || v.length == "undefined")
-        throw new Error(`Expected [${l||""}]${type.prototype.__context.name}, but got ${v}:${typeof v}`)
+        _throw(new Error(`Expected [${l||""}]${type.prototype.__context.name}, but got ${v}:${typeof v}`))
       if(l != 0 && v.length != l)
-        throw new Error(`Expected fixed length [->${l}]${type.prototype.__context.name} but got ${v.length}`);
+        _throw(new Error(`Expected fixed length [->${l}]${type.prototype.__context.name} but got ${v.length}`));
       let ret = [];
       v.forEach(el => ret.push(type(el)))
       return ret;
@@ -163,7 +171,7 @@ export function Type (name,definition,basetype){
 
 export const Enum = Type("Enum",function([name,fields={}]){
   if(typeof fields != "object" || fields.length == 'undefined')
-    throw new Error(`Expected array in Enum:${name}, got ${fields}:${typeof fields}`)
+    _throw(new Error(`Expected array in Enum:${name}, got ${fields}:${typeof fields}`))
   let Enum = DefineType({
     parse : function(v){
       if(v == undefined)
@@ -171,7 +179,7 @@ export const Enum = Type("Enum",function([name,fields={}]){
       if(v == "*")
         return fields;
       if(fields.indexOf(v) < 0)
-        throw new Error(`Unknown enum field ${v} in ${name}:{${fields}}`)
+        _throw(new Error(`Unknown enum field ${v} in ${name}:{${fields}}`))
       return v;
     }
   })
@@ -214,7 +222,7 @@ export const VMap = Type("VMap",function([name,struct = {}]){
     constCheck : function (v={},c={}){
       for (let key in c){
         if(c[key] != undefined && v[key] != undefined)
-          throw new Error(`Can't override const field ${this.name}{${key}:${c[key]}} to ${v[key]}`)
+          _throw(new Error(`Can't override const field ${this.name}{${key}:${c[key]}} to ${v[key]}`))
       }
     },
     parse : function (v={}){
@@ -246,7 +254,7 @@ export const Map = Type("Map",function([name,struct = {}]){
     constCheck : function (v={},c={}){
       for (let key in c){
         if(c[key] != undefined && v[key] != undefined)
-          throw new Error(`Can't override const field ${this.name}{${key}:${c[key]}} to ${v[key]}`)
+          _throw(new Error(`Can't override const field ${this.name}{${key}:${c[key]}} to ${v[key]}`))
       }
     },
     parse : function (v={}){
@@ -260,7 +268,7 @@ export const Map = Type("Map",function([name,struct = {}]){
       }
       let keys = Object.keys(_v)
       if(keys.length){
-        throw new Error(`Unexpected fields {${keys}} in ${this.name}:{${Object.keys(this.parse())}}`);
+        _throw(new Error(`Unexpected fields {${keys}} in ${this.name}:{${Object.keys(this.parse())}}`));
       }
       return ret;
     },
@@ -284,7 +292,7 @@ export const EMap = Type("EMap",function([name,struct = {}]){
     constCheck : function (v={},c={}){
       for (let key in c){
         if(c[key] != undefined && v[key] != undefined)
-          throw new Error(`Can't override const field ${this.name}{${key}:${c[key]}} to ${v[key]}`)
+          _throw(new Error(`Can't override const field ${this.name}{${key}:${c[key]}} to ${v[key]}`))
       }
     },
     parse : function (v={}){
@@ -304,7 +312,7 @@ export const Int = Type("Int",function(v){
   if(v==undefined)return v;
   let num = Number(v);
   if (isNaN(num)){
-    throw new Error(`Failed parse Int from ${JSON.stringify(v)}:${typeof v}`)
+    _throw(new Error(`Failed parse Int from ${JSON.stringify(v)}:${typeof v}`))
   }
   return Math.floor(num);
 })
@@ -312,13 +320,13 @@ export const Float = Type("Float",function(v){
   if(v==undefined)return v;
   let num = Number(v);
   if (isNaN(num)){
-    throw new Error(`Failed parse Float from ${JSON.stringify(v)}:${typeof v}`)
+    _throw(new Error(`Failed parse Float from ${JSON.stringify(v)}:${typeof v}`))
   }
   return num;
 })
 export const String = Type("String",function(v){
   if(v==undefined)return v;
-  if(typeof v != "string") throw new Error(`expected string, got ${v}:${typeof v}`)
+  if(typeof v != "string") _throw(new Error(`expected string, got ${v}:${typeof v}`))
   return ""+v;
 })
 

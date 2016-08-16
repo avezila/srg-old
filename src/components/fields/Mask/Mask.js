@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
-import {FormControl} from "react-bootstrap"
+import FormControl from "react-bootstrap/es/FormControl"
 
+const TimerDT = 200;
 
 class Mask extends Component {
   constructor (props){
@@ -66,65 +67,54 @@ class Mask extends Component {
     return +text;
   }  
   onInput (e){
+    //console.log(e.target.input.value,this.refs.input.value)
+    this.edit = true;
     let input = e.target;
     let ereplace = this.editReplace(input.value);
     let breplace = this.blurReplace(ereplace);
     let value  = this.fromText(breplace);
-    if(value != this.props.value){
-      this.edit = true;
-      this.props.onChange(value);
-      return;
-    }else if (this.state.value != ereplace)
+    if (this.state.value != ereplace)
       this.setState({value:ereplace});  
-    else input.value = ereplace;
-    this.edit = true;
+    else
+      input.value = ereplace;
+    
+    if(value != this.props.value)
+      this.onChange(value);
   }
   onBlur(){
+    this.edit = false;
     let input = ReactDOM.findDOMNode(this.refs.input);
     let ereplace = this.editReplace(input.value);
     let breplace = this.blurReplace(ereplace);
     let value  = this.fromText(breplace);
-    if(value != this.props.value){
-      this.props.onChange(value);
-      return;
-    }
     this.setState({value:breplace});
+
+    if(value != this.props.value)
+      this.onChange(value);
   }
   componentWillReceiveProps (props){
+    if(this.edit)
+      return;
     if(this.edit){
       this.setState({value:this.editReplace(this.toText(props.value))});
     }else {
       this.setState({value:this.blurReplace(this.editReplace(this.toText(props.value)))});
     }
-    this.edit = false;
   }
-  onChange2 (field,e){
-    let text = e.target.value;
-    if(text === ""){
-      text = undefined;
-    }else switch (this.props.value.pattern){
-      case "int":
-        text = (text.replace(/[,\.].*$/g,"").replace(/\D/g,""))
-        break;
-      case "meter":
-        text = (text.replace(/,/g,".").replace(/[^\d\.]/g,""))
-        break;
-    }
-    this.presave = {};
-    if(text===e.target.value){
-      this.presave[field] = text;
-    }
-    if(text !== undefined)
-      switch (this.props.value.pattern){
-        case "int":
-        case "meter":
-          text = +text;
-          break;
-      }
-    if(text === "")
-      text = undefined;
-    let v = {...this.props.value.data,[field]: text }
-    this.props.onChange(v)
+
+  onChange (value) {
+    this.time = new Date().getTime();
+    if(!this.timer)
+      this.timer = setTimeout(::this.onTimer,TimerDT);
+  }
+
+  onTimer (){
+    let time = new Date().getTime();
+    let dt = time-this.time;
+    if(dt<TimerDT)
+      return this.timer = setTimeout(::this.onTimer,TimerDT-dt);
+    this.timer = undefined;
+    this.props.onChange(this.fromText(this.state.value));
   }
  
   render () {
@@ -134,7 +124,7 @@ class Mask extends Component {
         ref="input"
         value={this.state.value}
         type="text"
-        onInput={::this.onInput}
+        onChange={::this.onInput}
         onBlur={::this.onBlur}
          />
     )

@@ -19,6 +19,7 @@ const webpackConfig = {
   target: 'web',
   devtool: config.compiler_devtool,
   resolve: {
+    mainFields: ['jsnext:main', 'browser', 'main'],
     root: paths.client(),
     extensions: ['', '.js', '.jsx', '.json','.css','.scss','.sass'],
   },
@@ -80,20 +81,19 @@ if (__DEV__) {
   webpackConfig.plugins.push(
     new webpack.optimize.OccurrenceOrderPlugin(),
     //new webpack.optimize.DedupePlugin(), // ie8 failed
-		//new es3ifyPlugin(),
-		new ClosureCompilerPlugin({ // for ie8 es3fy
+		/*new ClosureCompilerPlugin({ // for ie8 es3fy
 			compiler: {
 				language_in: 'ECMASCRIPT6',
 				language_out: 'ECMASCRIPT3',
 				compilation_level: 'SIMPLE_OPTIMIZATIONS'
 			},
 			concurrency: 3,
-		}),
+		}),*/
     new webpack.optimize.UglifyJsPlugin({
       compress: {
-        unused: true,
+        unused: false,
         dead_code: true,
-        warnings: true,
+        warnings: false,
         properties : true,
         drop_debugger : true,
         unsafe : true,
@@ -114,11 +114,12 @@ if (__DEV__) {
 				negate_iife: true,
       },
       comments : false,
-      sourceMap : false,
-      mangle : {
-				toplevel : true,
-			},
+      //sourceMap : false,
+      //mangle : {
+				//toplevel : true,
+			//},
     }),
+		new es3ifyPlugin(),
   )
 }
 
@@ -160,7 +161,7 @@ var babelSettings = {
 }
 webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
-  exclude : /(?=.*\b(node_modules)\b)(?!.*\b(react-router|redux-router|redux-saga|react-reinput|react-bootstrap-multiselect|react-tag-input|reat-bootstrap-datetimepicker|react-tag-input|react-dnd-html5-backend)\b)(.+)/i,
+  exclude : /(?=.*\b(node_modules)\b)(?!.*\b(node_modules\/[\w\.-]+\/(?:src|es)|react-router|redux-router|redux-saga|react-reinput|react-bootstrap-multiselect|react-tag-input|reat-bootstrap-datetimepicker|react-tag-input|react-dnd-html5-backend)\b)(.+)/i,
   loaders: [
     'babel?'+JSON.stringify(babelSettings),
   ]

@@ -2,9 +2,23 @@ import React, { Component, PropTypes } from 'react'
 import RBMultiselect from 'react-bootstrap-multiselect'
 
 
+const TimerDT = 50;
 
 class Multiselect extends Component {
-  onChange (option, checked, select){
+  onChange (...args){
+    this.args = args;
+    this.time = new Date().getTime();
+    if(!this.timer)
+      this.timer = setTimeout(::this.onTimer,TimerDT);
+  }
+  onTimer (){
+    let time = new Date().getTime();
+    let dt = time - this.time;
+    if(dt<TimerDT)
+      return this.timer = setTimeout(::this.onTimer,TimerDT-dt)
+    this.timer = undefined;
+    let [option, checked, select] = this.args;
+
     let fields = {};
     for (let obj of this.props.value.data)
       if(obj.selected)

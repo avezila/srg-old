@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import {Alert,Collapse} from "react-bootstrap"
+import Alert from "react-bootstrap/es/Alert"
+import Collapse from "react-bootstrap/es/Collapse"
 
 import s from "./ErrorItem.sass"
 

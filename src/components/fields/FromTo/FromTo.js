@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
-import {FormGroup,FormControl,InputGroup} from "react-bootstrap"
+import FormGroup from "react-bootstrap/es/FormGroup"
+import InputGroup from "react-bootstrap/es/InputGroup"
 
 import {Mask} from "components/fields"
 import s from "./FromTo.sass"

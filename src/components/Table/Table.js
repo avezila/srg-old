@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import {connect} from 'react-redux'
-import {ProgressBar,Table as BTable} from 'react-bootstrap'
 
 import {Nano} from 'components'
 import s from './Table.sass'

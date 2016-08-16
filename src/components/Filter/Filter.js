@@ -1,15 +1,17 @@
 import React, { Component, PropTypes } from 'react'
 import {connect} from 'react-redux'
-import {form, FormGroup,FormControl,ControlLabel,HelpBlock} from "react-bootstrap"
 
 
 import {Nano} from 'components'
 import {filterChange} from 'actions'
 import s from './Filter.sass'
 
-import _ from "lodash"
+import _set from "lodash/set"
+import _get from "lodash/get"
+
 
 import {Multiselect,FromTo,Checkbox,Words} from "components/fields"
+import {FilterToFields} from 'const/Cian'
 
 
 @connect(({cian}) =>({
@@ -17,12 +19,12 @@ import {Multiselect,FromTo,Checkbox,Words} from "components/fields"
 }), {filterChange})
 class Filter extends Component {
   onChange (field,value){
-    let nf = {
-      ...this.props.filter,
+    let newFilter = {
+      ...(this.props.filter),
     }
-    _.set(nf,field,value);
+    _set(newFilter,field,value);
 
-    this.props.filterChange(nf)
+    this.props.filterChange({filter:newFilter})
   }
   SubTitle  (title,key){
     return (
@@ -60,11 +62,11 @@ class Filter extends Component {
     )
   }
   render () {
-    let fields = cian.FilterToFields(this.props.filter)
+    let fields = FilterToFields(this.props.filter)
     let form = [];
     
     for (let key in fields){
-      let o = _.get(fields,key)//fields[key];
+      let o = _get(fields,key)//fields[key];
       if(o.hide)
         continue;
       if(o.title)

@@ -132,6 +132,8 @@ export const Offer = VMap("Offer",{
   sourceName  : String,
   sourceText  : String,
   price       : Int,
+  trusted       : Bool,
+  space         : Float,
 })
 
 export const OfferCommercial = Map("OfferCommercial",{
@@ -143,15 +145,32 @@ export const OfferCommercial = Map("OfferCommercial",{
   contractType  : ContractType,
   line          : Int,
   storeys       : Int.array(),
+  floor         : Int,
+  rooms         : Int,
+  pricePerMeter : Int,
 })
 
 export const OfferFlat = Map("OfferFlat",{
   ...Offer.const({type:"FLAT"}),
-  storeys       : Int.array(),
   wallsType     : WallsType,
   living        : Float,
   kitchen       : Float,
+  storeys       : Int.array(),
+
+  floor         : Int,
+  rooms         : Int,
 })
+
+export const ParseOffer = (offer={}) => {
+  switch (offer.type){
+    case "COMMERCIAL":
+      return OfferCommercial(offer)
+    case "FLAT":
+      return OfferFlat(offer)
+    default :
+      return Offer(offer)
+  }
+}
 
 
 export const ComparableOffer = VMap("ComparableOffer",{
@@ -269,7 +288,6 @@ function multiselectFromMEnum (en,arr){
     value     : key,
     selected  : arr.map(v=>""+v).indexOf(key) >= 0,
   }))
-  console.log(ret)
   return ret;
 }
 export const FilterToFields = Type("FilterFields",(o)=> {

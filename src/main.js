@@ -13,6 +13,10 @@ import $ from 'jquery'
 global.$ = global.jQuery = $
 import "jQuery-ajaxTransport-XDomainRequest"
 
+
+
+
+
 $.ajaxSetup({
   cache: true
 });

@@ -9,9 +9,6 @@ import "react-bootstrap-multiselect/css/bootstrap-multiselect.css"
 
 import "styles/core"
 
-import TestApi from 'containers/TestApi'
-
-
 class App extends Component {
   static propTypes = {
     routes: PropTypes.object.isRequired,
@@ -21,11 +18,9 @@ class App extends Component {
   render () {
     return (
       <Provider store={this.props.store}>
-        <TestApi>
-          <ReduxRouter>
-            {this.props.routes}
-          </ReduxRouter>
-        </TestApi>
+        <ReduxRouter>
+          {this.props.routes}
+        </ReduxRouter>
       </Provider>
     )
   }
