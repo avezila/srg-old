@@ -15,14 +15,42 @@ let Addon = InputGroup.Addon
 let to2 = s=> (""+s).length==1? "0"+s:s
 
 
+const TimerDT = 200;
+
 class FromTo extends Component {
+  constructor (props){
+    super(props)
+    this.state = {
+      value : props.value.data,
+    }
+  }
+  componentWillReceiveProps (props){
+    this.setState({
+      value : props.value.data,
+    })
+  }
   onChange (field,text){
     if(this.props.value.type=="date")
       if(!text.match(/\d\d\d\d-\d\d-\d\d/))
-        text = undefined
+        text = undefined;
+    this.setState({
+      value : {
+        ...this.state.value,
+        [field] : text,
+      }
+    })
 
-    let v = {...this.props.value.data,[field]: text }
-    this.props.onChange(v)
+    this.time = new Date().getTime();
+    if(!this.timer)
+      this.timer = setTimeout(::this.onTimer,TimerDT);
+  }
+  onTimer (){
+    let time = new Date().getTime();
+    let dt = time - this.time;
+    if(dt<TimerDT)
+      return this.timer = setTimeout(::this.onTimer,TimerDT-dt)
+    this.timer = undefined;
+    this.props.onChange(this.state.value)
   }
   getInput (field,pref){
     switch (this.props.value.type){
@@ -32,7 +60,7 @@ class FromTo extends Component {
             <Addon>{pref}</Addon>
             <Mask 
               type={this.props.value.pattern}
-              value={this.props.value.data[field]}
+              value={this.state.value[field]}
               onChange={this.onChange.bind(this,field)} />
           </InputGroup>
         );
@@ -47,7 +75,7 @@ class FromTo extends Component {
               format="YYYY-MM-DD"
               ref={"date"+field}
               viewMode="date"
-              defaultText={this.props.value.data[field]||""}
+              defaultText={this.state.value[field]||""}
               inputFormat="YYYY-MM-DD"
               onChange={this.onChange.bind(this,field)}
               inputProps={{
@@ -59,7 +87,7 @@ class FromTo extends Component {
         )
     }
   }
-            //{this.props.value.data[field] || ""}
+  
   render () {
     return (
       <FormGroup className={s.form_group}>       
