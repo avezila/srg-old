@@ -6,7 +6,7 @@ import CianApi from "./CianApi"
 import {TestCianApi} from "./TestCianApi"
 
 function * filterOffers(action){
-  let token = (yield select()).cian.context.token;
+  let token = (yield select()).cian.token;
   if(!token)
     return yield put(actions.accessDenied());
   try {
@@ -38,7 +38,7 @@ function * getOffers(action){
       needRequest.push(id)
   if(!needRequest.length)
     return;
-  let token = state.context.token;
+  let token = state.token;
   if(!token)
     return yield put(actions.accessDenied());
   try {
@@ -78,11 +78,92 @@ function * onAddError(){
   }
 }
 
+function * requestComparableBounds (){
+  let {token,context} = (yield select()).cian;
+  if(!token)
+    return yield put(actions.accessDenied());
+  if(!context.comparable)
+    context = (yield takeLatest('GET_CONTEXT_RESPONSE')).payload.context;
+  try {
+    const request  = { 
+      token,
+      query : {
+        geocode : context.comparable.rawAddress,
+        results : 1,
+      } 
+    }
+    let l1 = context.comparable.location[1]
+    let l2 = context.comparable.location[0]
+    if(l1 > 16 && l2 > 40 && l1 < 65 && l2<75){
+      request.query.ll = [l1,l2].join(',');
+      request.query.spn = [0.5,0.5].join(',');
+      request.query.rspn = 1;
+    }
+    let query = [];
+    for(let key in request.query)
+      query.push(`${key}=${encodeURIComponent(request.query[key])}`);
+    request.query = query.join("&");
+    const response = yield call(CianApi.ymaps, request);
+    if(response.error.type){
+      yield put(actions.addError({error:response.error}));
+    }else {
+      yield put(actions.responseComparableBounds(response));
+    }
+  } catch (e) {
+    yield put(actions.addError({
+      error : {
+        type : "FETCH",
+        e,
+      }
+    }));
+  }
+}
+function * onRequestComparableBounds (){
+  yield* takeLatest('REQUEST_COMPARABLE_BOUNDS', requestComparableBounds);
+}
+
+function * getContext (){
+  let token = (yield select()).cian.token;
+  if(!token)
+    return yield put(actions.accessDenied());
+  try {
+    const request = { token }
+    const response = yield call(CianApi.getContext, request);
+    if(response.error.type){
+      yield put(actions.addError({error:response.error}));
+    }else {
+      response.context.enviroment = response.context.enviroment || "{}";
+      try {
+        response.context.enviroment = JSON.parse(response.context.enviroment)
+      }catch (e){
+        response.context.enviroment = {};
+      }
+
+      yield put(actions.getContextResponse(response));
+    }
+  } catch (e) {
+    yield put(actions.addError({
+      error : {
+        type : "FETCH",
+        e,
+      }
+    }));
+  }
+}
+
+function * firstInit (){
+  yield * getContext();
+  let filter = (yield select()).cian.filter;
+  yield * filterOffers({payload:{filter}});
+}
+
 function * mySaga() {
+  yield fork(onRequestComparableBounds)
   yield fork(onFilterChange)
   yield fork(onFilterOffersResponse)
   yield fork(TestCianApi)
   yield fork(onAddError)
+  yield fork(firstInit)
 }
 
 export default mySaga;

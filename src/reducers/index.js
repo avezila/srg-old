@@ -2,6 +2,8 @@ import {handleActions} from "redux-actions"
 
 import * as actions from 'actions'
 import {Filter,Error,ParseOffer} from 'const/Cian'
+import {BoundsScale} from 'lib/Map'
+import lmerge from "lodash/merge"
 
 let errorID = 0;
 
@@ -12,7 +14,20 @@ export const cian = handleActions({
   }),
   [actions.filterOffersResponse]: (state, action) => ({
     ...state,
-    offerIDs : action.payload.offerIDs || [],
+    //offerIDs : action.payload.offerIDs || [],
+    offerIDs : (function(){
+      let ret = []
+      for(let i = 0; i < 10000; i++)
+        ret.push(i + ((Math.random()>0.8)? 1000 : 0) );
+      return ret;
+    })(),
+  }),
+  [actions.getContextResponse]: (state, action) => ({
+    ...state,
+    context : {
+      ...state.context,
+      ...action.payload.context,
+    },
   }),
   [actions.addError] : (state,action) => ({
     ...state,
@@ -28,6 +43,20 @@ export const cian = handleActions({
   }),
   [actions.getOffersResponse]: (state, action) => {
     let newState = {...state, offers : {...state.offers}}
+    // TEST HACK
+    let offers = [];
+    for(let i of state.offerIDs){
+      offers.push({
+        ...action.payload.offers[Math.floor(Math.random()*action.payload.offers.length)],
+        id : i,
+        location : [
+          55.57+Math.random()*0.5,
+          37.38+Math.random()*0.5,
+        ],
+      })
+    }
+    action.payload.offers = offers;
+    //****************
     action.payload.offers.map(offer=>{
       offer = ParseOffer(offer)
       if(offer.id)
@@ -35,11 +64,36 @@ export const cian = handleActions({
     })
     return newState;
   },
+  [actions.responseComparableBounds]: (state,action)=>{
+    let bounds;
+    try {
+      let env = action.payload.response.GeoObjectCollection.featureMember[0].GeoObject.boundedBy.Envelope;
+      bounds = [env.lowerCorner.split(" ").map(v=>+v).reverse(),env.upperCorner.split(" ").map(v=>+v).reverse()]
+      bounds = BoundsScale(bounds,2)
+    }catch(e){
+      let l = state.context.comparable.location;
+      let d = 0.15;
+      bounds = [[l[0]-d,l[1]-d],[l[0]+d,l[1]+d]];
+    }
+    return {
+      ...state,
+      context : {
+        ...state.context,
+        enviroment : {
+          ...state.context.enviroment,
+          bounds : bounds,
+        }
+      }
+    }
+  },
+  [actions.changeContext]: (state,action)=>({
+    ...state,
+    context : lmerge({},state.context,action.payload),
+  }),
 }, {
   filter    : Filter(),
-  context   : {
-    token :  "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImFkc2FkcyIsImV4cCI6OTAwMDAwMTQ3MDgzMjc5N30.nARQ90Cf0nJqZFFp3a-LN9HY9sqb6m2c6cA1KQarUXE",
-  },
+  context   : {},
+  token     :  "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImFkc2FkcyIsImV4cCI6OTAwMDAwMTQ3MDgzMjc5N30.nARQ90Cf0nJqZFFp3a-LN9HY9sqb6m2c6cA1KQarUXE",
   offers    : {},
   offerIDs  : [],
   errors    : [],

@@ -268,7 +268,7 @@ export const Map = Type("Map",function([name,struct = {}]){
       }
       let keys = Object.keys(_v)
       if(keys.length){
-        _throw(new Error(`Unexpected fields {${keys}} in ${this.name}:{${Object.keys(this.parse())}}`));
+        //_throw(new Error(`Unexpected fields {${keys}} in ${this.name}:{${Object.keys(this.parse())}}`));
       }
       return ret;
     },
@@ -326,7 +326,7 @@ export const Float = Type("Float",function(v){
 })
 export const String = Type("String",function(v){
   if(v==undefined)return v;
-  if(typeof v != "string") _throw(new Error(`expected string, got ${v}:${typeof v}`))
+  if(typeof v != "string" && typeof v != 'number') _throw(new Error(`expected string, got ${v}:${typeof v}`))
   return ""+v;
 })
 

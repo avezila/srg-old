@@ -159,6 +159,7 @@ export const OfferFlat = Map("OfferFlat",{
 
   floor         : Int,
   rooms         : Int,
+  pricePerMeter : Int,
 })
 
 export const ParseOffer = (offer={}) => {
@@ -189,7 +190,7 @@ export const ComparableOfferFlat = Map("ComparableOfferFlat",{
 export const Context = Map("Context",{
   id          : String,
   favoriteIDs : String.array(),
-  enviroment  : String,
+  enviroment  : undefined,
   reportLink  : String,
   modified    : String,
   created     : String,
