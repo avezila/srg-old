@@ -1,0 +1,33 @@
+.root
+  +span(12 of 12)
+  padding : 0 10px
+  position : relative
+  line-height : 30px
+  &:hover
+    background : #EEE
+
+.glyph
+  float : right
+  line-height : 30px
+  font-size : 15px
+  padding : 0 3px
+  color : #444
+  margin-top : -1px
+  cursor : pointer
+  &:hover
+    color : #000
+    transform: scale(1.02)
+  &:active
+    transform: scale(0.95)
+
+.glyph.active
+  color : #FAA937
+  &:hover
+    color : #FAA937
+
+.background
+  position : absolute
+  top : 0
+  left : 0
+  right : 0
+  bottom : 0

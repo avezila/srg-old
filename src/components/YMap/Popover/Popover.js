@@ -1,20 +1,11 @@
 import React, { Component, PropTypes } from 'react'
-
-import {connect} from 'react-redux'
-
-import s from './Popover.sass'
-
 import RBPopover from "react-bootstrap/es/Popover"
+
+import {OfferShort,Nano} from "components"
+import s from './Popover.sass'
 
 
 class Popover extends Component {
-  row (offer){
-    return (
-      <div key={offer.id} className={s.row}>
-        <strong>{offer.id}</strong>
-      </div>
-    )
-  }
   render (){
     let title = this.props.offers[0].rawAddress;
     return (
@@ -23,9 +14,11 @@ class Popover extends Component {
         placement="top"
         title={title}
         id="popover-basic" >
-        <div className={s.content}>
-          {this.props.offers.map(o=>this.row(o))}
-        </div>
+        <Nano className={s.content}>
+          {this.props.offers.map(o=>(
+            <OfferShort key={o.id} offer={o} />
+          ))}
+        </Nano>
       </RBPopover>
     )
   }

@@ -13,11 +13,17 @@ import _get from "lodash/get"
 import {Multiselect,FromTo,Checkbox,Words} from "components/fields"
 import {FilterToFields} from 'const/Cian'
 
+import Glyphicon from 'react-bootstrap/es/Glyphicon'
+
 
 @connect(({cian}) =>({
   filter : cian.filter,
 }), {filterChange})
 class Filter extends Component {
+  constructor (props){
+    super(props)
+    this.state = {open : true}
+  }
   onChange (field,value){
     let newFilter = {
       ...(this.props.filter),
@@ -83,8 +89,15 @@ class Filter extends Component {
     
 
     return (
-      <Nano className={s.root}>
-        {form}
+      <Nano ref="root" byContent={true} className={s.root}>
+        <div className={s.title} onClick={ ()=> this.setState({ open: !this.state.open })}>
+          <span className={s.title_text}>Фильтр</span>
+          { this.state.open ? <Glyphicon className={s.glyph} glyph="menu-down"  />
+                            : <Glyphicon className={s.glyph} glyph="menu-right" /> }
+        </div>
+        <div className={s.content}>
+          {this.state.open ? form : undefined}
+        </div>
       </Nano>
     )
   }

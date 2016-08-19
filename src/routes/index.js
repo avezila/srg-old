@@ -1,13 +1,14 @@
 import React from 'react'
 import { Route, IndexRoute, IndexRedirect, Redirect } from 'react-router';
 
-import {YMap, Table, Filter, ErrorCode} from "components"
+import {YMap, Filter, ErrorCode, Content, Favorite} from "components"
 import CoreLayout from 'containers/CoreLayout'
 
 let Layouts = {
   Filter : ({children})=>(
     <CoreLayout>
       <Filter />
+      <Favorite />
       <YMap />
       {children}
     </CoreLayout>
@@ -33,7 +34,10 @@ export const MainRoute = () => (
     <IndexRedirect to="/map" />
     <Route path="/map" component={Layouts.Filter} />
     <Route path="/table" component={Layouts.Filter}>
-      <IndexRoute components={Table} />
+      <IndexRoute components={Content} />
+    </Route>
+    <Route path="/offer-*" component={Layouts.Filter}>
+      <IndexRoute components={Content} />
     </Route>
     <Route path="/403*" components={Layouts.Error403} />
     <Route path="/404*" title="Page Not Found" components={Layouts.Error404} />

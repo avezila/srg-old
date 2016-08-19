@@ -1,0 +1,77 @@
+.root
+  +span(12 of 12)
+  padding : 0 10px
+  position : relative
+  line-height : 50px
+  &:hover
+    background : #EEE
+ 
+.title
+  +span(12 of 12)
+  float : left
+  font-size : 20px
+  line-height : 40px
+  padding-bottom : 20px
+.hash
+  float : left
+  width : 90px
+.big
+  float : left
+  padding : 0 10px
+  font-size : 17px
+.small
+  float : left
+  padding : 0 6px
+  font-size : 12px
+
+.glyph
+  float : right
+  line-height : 40px
+  font-size : 14px
+  padding : 0 3px
+  color : #444
+  cursor : pointer
+  &:hover
+    color : #000
+    
+.glyph_plus
+  margin-top : -1px
+
+.glyph.active
+  color : #FAA937
+  &:hover
+    color : #FAA937
+ 
+.id
+  float : right
+  
+.background
+  position : absolute
+  top : 0
+  left : 0
+  right : 0
+  bottom : 0
+
+.remove
+  position : absolute
+  top : -10px
+  right : 0px
+  cursor : pointer
+  font-size : 30px
+  width : 30px
+  text-align : center
+  box-sizing : content-box
+  line-height : 30px
+  opacity : 0.3
+  padding-top : 15px
+  padding-right : 15px
+  padding-left : 30px
+  padding-bottom : 30px
+  &:hover
+    opacity : 0.8
+  &:active
+    transform: scale(0.95)
+
+  &,&:active,&:focus,&:hover
+    text-decoration : none
+    color : black

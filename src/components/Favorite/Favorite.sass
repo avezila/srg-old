@@ -1,10 +1,9 @@
 
 .root
-  +isolate
   position: absolute
-  width : $filter-width
+  width : $favorite-width
 
-  left    : $gutter
+  right    : $gutter
   top     : $gutter
   bottom  : $gutter
 
@@ -22,10 +21,8 @@
   .root
     border : none
 
-
-
 .title
-  padding : 0 15px
+  padding : 0 10px
   width : 100%
   cursor : pointer
   line-height : 2em
@@ -39,14 +36,4 @@
 
 .content
   +span(12 of 12)
-  padding : 0 15px
-
-
-.row
-  float : left
-  width : 100%
-  padding : 3px 0
-.subtitle
-  font-size : 1.1em
-  font-weight : 500
-  padding-top : 6px
+  padding : 0

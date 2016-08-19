@@ -1,0 +1,44 @@
+
+.root
+  +span(12 of 12)
+  padding : 0
+
+
+.row
+  +span(12 of 12)
+  line-height : 35px
+  color : black
+  cursor : pointer
+  &:hover
+    background : #EEE
+
+.id
+  +span(1 of 12)
+  font-weight : bold
+  text-align : center
+
+.address
+  +span(11 of 12)
+
+.remove
+  position : absolute
+  top : -10px
+  right : 0px
+  font-size : 20px
+  width : 20px
+  text-align : center
+  box-sizing : content-box
+  line-height : 20px
+  opacity : 0.3
+  padding-top : 15px
+  padding-right : 15px
+  padding-left : 30px
+  padding-bottom : 30px
+  &:hover
+    opacity : 0.8
+  &:active
+    transform: scale(0.95)
+
+  &,&:active,&:focus,&:hover
+    text-decoration : none
+    color : black

@@ -26,7 +26,9 @@ export async function ApiCall(method,rpcType,request){
   delete request.token
   var body = encodeURIComponent(JSON.stringify(request));
 
-  var response = await fetchJsonp(`${Env.host}/${Env.base}/${Env.api}/${method}?token=${token}&q=${body}`);
+  var response = await fetchJsonp(`${Env.host}/${Env.base}/${Env.api}/${method}?token=${token}&q=${body}`,{
+    timeout: 20000,
+  });
 
   response = await response.json()
   

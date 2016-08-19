@@ -11,10 +11,31 @@ class Nano extends Component {
   }
   async nano (flush){
     await Promise.delay(0)
+    if(this.props.byContent){
+      $(this.refs.root).css('padding',"");
+      let max = $(this.refs.root).outerHeight()-$(this.refs.nano).outerHeight()+$(this.refs.body).outerHeight()+1; // 2px fix for ie
+      $(this.refs.root).css({
+        'max-height':max,
+      });
+    }
+    await Promise.delay(0)
     $(this.refs.nano).nanoScroller();
+
+    if(!flush){
+      await Promise.delay(100)
+      await this.nano(true)
+    }
+
   }
   componentDidMount (){
+    if(this.props.byContent)
+      $(this.refs.root).css({
+        'max-height': 0,
+        'padding' : 0,
+      });
+
     this.nano()
+    $(window).resize(::this.nano)
   }
   componentDidUpdate (){
     this.nano()
@@ -22,12 +43,17 @@ class Nano extends Component {
   componentWillUnmount (){
     $(this.refs.nano).nanoScroller({destroy:true});
   }
+  update (){
+    this.nano()
+  }
   render () {
     return (
-      <div {...this.props} className={`${this.props.className||""} ${s.root}`}>
-        <div  ref="nano" className={`${s.nano} nano`}>
-          <div className={s.content+" nano-content"}>
-            {this.props.children}
+      <div {...this.props} ref="root" className={`${this.props.className||""} ${s.root}`}>
+        <div  ref="nano" className="nano">
+          <div ref="content" className={s.content+" nano-content"}>
+            <div ref="body" className={s.body}>
+              {this.props.children}
+            </div>
           </div>
         </div>
       </div>

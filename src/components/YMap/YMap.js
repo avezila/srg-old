@@ -9,9 +9,11 @@ import s from './YMap.sass'
 
 import {BoundsScale,InBounds} from 'lib/Map'
 
+
 import Popover from "./Popover"
 
 const TimerDT = 300;
+
 
 
 function getXY (b,p,width,height){
@@ -53,8 +55,8 @@ class YMap extends Component {
       dy = (height-200-50) - y;
     if(x<(315+200+50))
       dx = 315+200+50 - x;
-    if(x>(width-200-50))
-      dx = (width-200-50) - x;
+    if(x>(width-200-50-315))
+      dx = (width-200-50-315) - x;
  
     if(dx || dy){
       let center = MoveCenter(this.map.getCenter(),bounds,dx,dy,width,height);
@@ -129,8 +131,7 @@ class YMap extends Component {
     let offers = ids.map(id=>this.props.offers[id]);
     
     this.moveToPopover(marks[0].geometry.getCoordinates())
-    
-    ReactDOM.render((
+    ReactDOM.unstable_renderSubtreeIntoContainer(this,(
       <Popover offers={offers} />
     ), o.getElement());
   }

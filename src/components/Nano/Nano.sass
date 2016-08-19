@@ -6,7 +6,11 @@
 .content
   position : absolute
   max-height : 100%
-  padding : 0 15px
+
+.body
+  +span(12 of 12)
+  padding : 0
+  float : left
 
 :global
   .nano > .nano-pane
@@ -17,7 +21,10 @@
     width: 5px
     right: 4px
     top: 0px
-
+  .nano > .nano-content
+    bottom : auto
+  .nano > .nano-content:focus
+    outline : none
 :global
   .nano > .nano-pane  > .nano-slider
     background: #89a0b3

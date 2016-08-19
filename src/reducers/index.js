@@ -4,6 +4,7 @@ import * as actions from 'actions'
 import {Filter,Error,ParseOffer} from 'const/Cian'
 import {BoundsScale} from 'lib/Map'
 import lmerge from "lodash/merge"
+import luniq from "lodash/uniq"
 
 let errorID = 0;
 
@@ -90,9 +91,33 @@ export const cian = handleActions({
     ...state,
     context : lmerge({},state.context,action.payload),
   }),
+  [actions.changeFavorite]: (state,action)=>({
+    ...state,
+    context : {
+      ...state.context,
+      favoriteIDs : luniq([
+        ...Object.keys(action.payload.favoriteIDs),
+        ...state.context.favoriteIDs,
+      ].filter(id=>action.payload.favoriteIDs[id]!==false)),
+    },
+  }),
+  [actions.addOfferToReport]: (state,action)=>({
+    ...state,
+    context : {
+      ...state.context,
+      enviroment : {
+        ...state.context.enviroment,
+        addedOfferIDs : luniq([
+          action.payload.id,
+          ...(state.context.enviroment.addedOfferIDs||[]),
+        ]),
+      },
+    },
+  }),
 }, {
   filter    : Filter(),
-  context   : {},
+  context   : {
+  },
   token     :  "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImFkc2FkcyIsImV4cCI6OTAwMDAwMTQ3MDgzMjc5N30.nARQ90Cf0nJqZFFp3a-LN9HY9sqb6m2c6cA1KQarUXE",
   offers    : {},
   offerIDs  : [],
