@@ -17,8 +17,8 @@ export const cian = handleActions({
     //offerIDs : action.payload.offerIDs || [],
     offerIDs : (function(){
       let ret = []
-      for(let i = 0; i < 10000; i++)
-        ret.push(i + ((Math.random()>0.8)? 1000 : 0) );
+      for(let i = 0; i < 1000; i++)
+        ret.push(""+(i + ((Math.random()>0.8)? 1000 : 0)) );
       return ret;
     })(),
   }),
@@ -50,8 +50,8 @@ export const cian = handleActions({
         ...action.payload.offers[Math.floor(Math.random()*action.payload.offers.length)],
         id : i,
         location : [
-          55.57+Math.random()*0.5,
-          37.38+Math.random()*0.5,
+          55.745+Math.random()*0.025,
+          37.585+Math.random()*0.05,
         ],
       })
     }

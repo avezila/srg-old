@@ -30,9 +30,18 @@ function _throw (e){
 }
 
 function clear (v){
+  // if(typeof v == 'function')
+  //   v = {...v};
+  if(typeof v != 'object')
+    return v;
+  if(v.length != undefined)
+    return [...v];
+  v = {...v}
   for (let key in v)
     if(key.match(/^__/) || ["array","default","const"].indexOf(key)>=0)
       delete v[key];
+    else
+      v[key] = clear(v[key]);
   return v;
 }
 
@@ -82,7 +91,7 @@ export const BaseType = {
 
 export function DefineType (_o={},_baseType = BaseType) {
   let _c = {..._baseType,..._o} // new context
-  clear(_c.struct)
+  _c.struct = clear(_c.struct)
   let type = function (...v){
     if(v.length == 0) v = undefined;
     else if(v.length == 1) v =  v[0];
@@ -133,10 +142,6 @@ function DefineUndefine(_for,_from){
   }
 }
 
-
-
-
-
 export function Type (name,definition,basetype){
   if(typeof name != 'string'){
     [definition,basetype] = [name,definition]
@@ -166,8 +171,6 @@ export function Type (name,definition,basetype){
       return DefineType({name}).default(definition); 
   }
 }
-
-
 
 export const Enum = Type("Enum",function([name,fields={}]){
   if(typeof fields != "object" || fields.length == 'undefined')
@@ -207,7 +210,7 @@ export const MEnum = Type("MEnum",function([name,fields={}]){
 })
 
 export const VMap = Type("VMap",function([name,struct = {}]){
-  clear(struct)
+  struct = clear(struct)
 
   for (let key in struct){
     struct[key] = Type(`${name}.${key}`,struct[key]);
@@ -226,12 +229,12 @@ export const VMap = Type("VMap",function([name,struct = {}]){
       }
     },
     parse : function (v={}){
-      clear(v)
+      v = clear(v)
       let ret = {...v};
       for (let key in this.struct){
         ret[key] = this.struct[key](v[key])
       }
-      return ret;
+      return clear(ret);
     },
     struct : struct,
   })
@@ -240,7 +243,7 @@ export const VMap = Type("VMap",function([name,struct = {}]){
 
 
 export const Map = Type("Map",function([name,struct = {}]){
-  clear(struct)
+  struct = clear(struct)
   for (let key in struct){
     struct[key] = Type(`${name}.${key}`,struct[key]);
   }
@@ -258,7 +261,7 @@ export const Map = Type("Map",function([name,struct = {}]){
       }
     },
     parse : function (v={}){
-      clear(v)
+      v = clear(v)
       
       let _v = {...v}
       let ret = {};
@@ -270,7 +273,7 @@ export const Map = Type("Map",function([name,struct = {}]){
       if(keys.length){
         //_throw(new Error(`Unexpected fields {${keys}} in ${this.name}:{${Object.keys(this.parse())}}`));
       }
-      return ret;
+      return clear(ret);
     },
     struct : struct,
   })
@@ -278,7 +281,7 @@ export const Map = Type("Map",function([name,struct = {}]){
 })
 
 export const EMap = Type("EMap",function([name,struct = {}]){
-  clear(struct)
+  struct = clear(struct)
   for (let key in struct){
     struct[key] = Type(`${name}.${key}`,struct[key]);
   }
@@ -296,12 +299,12 @@ export const EMap = Type("EMap",function([name,struct = {}]){
       }
     },
     parse : function (v={}){
-      clear(v)
+      v = clear(v)
       let ret = {};
       for (let key in this.struct){
         ret[key] = this.struct[key](v[key])
       }
-      return ret;
+      return clear(ret);
     },
     struct : struct,
   })

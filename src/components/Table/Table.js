@@ -6,13 +6,17 @@ import s from './Table.sass'
 
 @connect(({cian})=>({
   offers : cian.offers,
+  offerIDs : cian.offerIDs,
 }))
 class Table extends Component {
   render () {
     return (
       <Nano className={s.root}>
-        {this.props.offers.map((it,i)=>(
-          <div key={i} className={s.row}>{it}</div>
+        {this.props.offerIDs.filter(id=>this.props.offers[id]).map((id,i)=>(
+          <div key={id} className={s.row}>
+            <div className={s.id}>{id}</div>
+            <div className={s.address}>{this.props.offers[id].rawAddress}</div>
+          </div>
         ))}
       </Nano>
     )

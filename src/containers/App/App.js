@@ -9,6 +9,10 @@ import "react-bootstrap-multiselect/css/bootstrap-multiselect.css"
 
 import "styles/core"
 
+import * as Cian from 'const/Cian'
+
+global.Cian = Cian
+
 class App extends Component {
   static propTypes = {
     routes: PropTypes.object.isRequired,

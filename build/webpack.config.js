@@ -6,7 +6,7 @@ import config from '../config'
 import _debug from 'debug'
 import path from 'path'
 import es3ifyPlugin from 'es3ify-webpack-plugin';
-
+import CSSSplitWebpackPlugin from 'css-split-webpack-plugin';
 
 
 const debug = _debug('app:webpack:config')
@@ -148,6 +148,7 @@ var babelSettings = {
     //['transform-es3-modules-literals', {loose:false}],
     ['transform-promise-to-bluebird'],
     ["transform-decorators-legacy"],
+    ['transform-proto-to-assign'],
     ["transform-async-to-module-method", {
       "module": "bluebird",
       "method": "coroutine"
@@ -316,7 +317,8 @@ if (!__DEV__) {
   webpackConfig.plugins.push(
     new ExtractTextPlugin('[name].[contenthash].css', {
       allChunks: true
-    })
+    }),
+    new CSSSplitWebpackPlugin({size: 4000}),
   )
 }
 

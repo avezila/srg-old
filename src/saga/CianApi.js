@@ -4,10 +4,29 @@ import Env from "const/Env"
 import fetchJsonp from "fetch-jsonp"
 
 
-export async function ApiCall(method,rpcType,request){
-  var body = encodeURIComponent(JSON.stringify(rpcType.request(request)));
+function clear (v){ // fix for ie8
+  if(typeof v == 'function')
+    v = {...v};
+  if(typeof v != 'object')
+    return v;
+  if(v.length != undefined)
+    return [...v];
+  v = {...v}
+  for (let key in v)
+    if(key.match(/^__/) || ["array","default","const"].indexOf(key)>=0)
+      delete v[key];
+    else
+      v[key] = clear(v[key]);
+  return v;
+}
 
-  var response = await fetchJsonp(`${Env.host}/${Env.base}/${Env.api}/${method}?q=${body}`);
+export async function ApiCall(method,rpcType,request){
+  request = clear(rpcType.request(request))
+  let token = request.token
+  delete request.token
+  var body = encodeURIComponent(JSON.stringify(request));
+
+  var response = await fetchJsonp(`${Env.host}/${Env.base}/${Env.api}/${method}?token=${token}&q=${body}`);
 
   response = await response.json()
   

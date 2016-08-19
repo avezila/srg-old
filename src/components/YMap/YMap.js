@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from 'react'
+import ReactDOM from 'react-dom'
+
 import {connect} from 'react-redux'
 
 import {loadApi} from './Api'
@@ -7,8 +9,22 @@ import s from './YMap.sass'
 
 import {BoundsScale,InBounds} from 'lib/Map'
 
+import Popover from "./Popover"
 
 const TimerDT = 300;
+
+
+function getXY (b,p,width,height){
+  let y = (p[0]-b[0][0])*height/(b[1][0]-b[0][0])
+  let x = (p[1]-b[0][1])*width/(b[1][1]-b[0][1])
+  return [x,y];
+}
+
+function MoveCenter(center,b,dx,dy,width,height){
+  dy = -dy*(b[1][0]-b[0][0])/height;
+  dx = -dx*(b[1][1]-b[0][1])/width;
+  return [center[0]+dy,center[1]+dx];
+}
 
 @connect(({cian}) =>({
   offers      : cian.offers,
@@ -20,14 +36,36 @@ class YMap extends Component {
   constructor (props){
     super(props);
     this.now = {};
+    this.buildBalloon = ::this.buildBalloon;
   }
-  componentDidMount (){
-    (async ()=>{
-      await this.tryInit(this.props);
-      await this.draw(this.props)
-    }).call(this).done()
+  async componentDidMount (){
+    await this.tryInit(this._props || this.props);
+    await this.draw(this._props || this.props)
   }
-
+  moveToPopover (coords){
+    let width = $(this.refs.map).width();
+    let height = $(this.refs.map).height();
+    let bounds = this.map.getBounds();
+    let [x,y] = getXY(bounds,coords,width,height)
+    let dx = 0, dy = 0;
+    if(y<50) dy = 50-y;
+    if(y>height-200-50)
+      dy = (height-200-50) - y;
+    if(x<(315+200+50))
+      dx = 315+200+50 - x;
+    if(x>(width-200-50))
+      dx = (width-200-50) - x;
+ 
+    if(dx || dy){
+      let center = MoveCenter(this.map.getCenter(),bounds,dx,dy,width,height);
+      setTimeout(function(){
+        this.map.panTo(center,{
+          delay : false,
+          duration : 200,
+        });
+      }.bind(this),10);
+    }
+  }
   async tryInit (props){
     if(this.inited) return;
     if(!props.enviroment)
@@ -47,15 +85,10 @@ class YMap extends Component {
         inscribe : false,
       }
     );
-
-    // var customBalloonContentLayout = ymaps.templateLayoutFactory.createClass([
-    //   '<ul class=list>',
-    //   // Выводим в цикле список всех геообъектов.
-    //   '{% for geoObject in properties.geoObjects %}',
-    //       '<li><a href=# data-placemarkid="{{ geoObject.properties.placemarkId }}" class="list_item">{{ geoObject.properties.balloonContentHeader|raw }}</a></li>',
-    //   '{% endfor %}',
-    //   '</ul>'
-    // ].join(''));
+    let that = this;
+    this.layout = ymaps.templateLayoutFactory.createClass( `<div></div>`, {
+        build: function(){ that.buildBalloon(this,...arguments) },
+    });
 
 
     this.map = new ymaps.Map(this.refs.map, {
@@ -66,9 +99,10 @@ class YMap extends Component {
     });
     this.clusterer = new ymaps.Clusterer({
       clusterDisableClickZoom: true,
-      //clusterBalloonPanelMaxMapArea: 0,
-      //clusterBalloonMaxHeight: 200,
-      //clusterBalloonContentLayout: customBalloonContentLayout,
+      gridSize : 64,
+      clusterBalloonLayout: this.layout,
+      clusterBalloonShadow : false,
+      clusterBalloonAutoPan : false,
     });
     this.map.geoObjects.add(this.clusterer)
     this.inited = 2;
@@ -78,14 +112,27 @@ class YMap extends Component {
       }
     })
     this.map.events.add('boundschange',::this.boundschange)
-    this.clusterer.events.add('click',::this.onclick)
   }
-  onclick (o){
-    let target = o.originalEvent.target;
-    if(target.options.getName() == "cluster"){
-      let cluster = target;
-      let marks = cluster.getGeoObjects();
+  buildBalloon (o){
+    global.o = o;
+    this.layout.superclass.build.call(o);
+    let marks = [];
+    if(o.getData().properties.getAll().id){
+      marks = [o.getData()];
+    }else {
+      marks = o.getData().properties.getAll().geoObjects
     }
+    
+    
+    let ids = marks.map(m=>m.properties.get("id"))
+    
+    let offers = ids.map(id=>this.props.offers[id]);
+    
+    this.moveToPopover(marks[0].geometry.getCoordinates())
+    
+    ReactDOM.render((
+      <Popover offers={offers} />
+    ), o.getElement());
   }
   boundschange (){
     this.time = new Date().getTime();
@@ -111,29 +158,30 @@ class YMap extends Component {
     this.inited = 0;
     this.map.destroy();
   }
-  componentWillReceiveProps (props){
-    (async ()=>{
-      await this.tryInit(props);
-      await this.draw(props)
-    }).call(this).done();
+  async componentWillReceiveProps (props){
+    this._props = props;
+    await this.tryInit(this._props);
+    await this.draw(this._props);
   }
   shouldComponentUpdate (){
     return false;
   }
 
-  async draw (props){  
+  async draw (props){
     if(this.inited!=2) return; // w8 for first map draw
-
     let add = props.offerIDs.filter( id => {
-      return !this.now[id] && props.offers[id] && InBounds(BoundsScale(props.enviroment.bounds,1.5),props.offers[id].location)
+      return !this.now[id] && 
+              props.offers[id] && 
+              InBounds(BoundsScale(props.enviroment.bounds,1.5),props.offers[id].location)
     })
-
     // del
     let del = [];
     let ids = {};
     props.offerIDs.map( id => ids[id] = true );
     for(let id in this.now)
-      if(!props.offers[id] || !ids[id] || !InBounds(BoundsScale(props.enviroment.bounds,1.5),props.offers[id].location))
+      if( !props.offers[id] || 
+          !ids[id] || 
+          !InBounds(BoundsScale(props.enviroment.bounds,1.5),props.offers[id].location))
         del.push(id);
     //*******
     
@@ -146,22 +194,16 @@ class YMap extends Component {
     if(add.length)
       this.clusterer.add(add.map(id=>{
         let offer = props.offers[id];
-        let placemark  = new ymaps.Placemark(offer.location, { 
-            hintContent: offer.type, 
-            balloonContent: offer.rawAddress, 
-            clusterCaption : id,
+
+        let placemark  = new ymaps.Placemark(offer.location, {
+            openBalloonOnClick : true, 
+            id : id,
+        }, {
+          balloonLayout: this.layout,
+          balloonShadow : false,
+          clusterBalloonAutoPan : false,
         });
         this.now[id] = {placemark};
-        // placemark.events.add('parentchange',function(o){
-        //   o = o.originalEvent;
-        //   let np = o.newParent;
-        //   if(!np || np.inited)
-        //     return;
-        //   console.log(np)
-        //   np.events.add('click',function(){
-        //     console.log(...arguments)
-        //   })
-        // })
         return placemark;
       }))
   }
