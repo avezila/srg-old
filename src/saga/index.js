@@ -9,6 +9,7 @@ function * filterOffers(action){
   let token = (yield select()).cian.token;
   if(!token)
     return yield put(actions.accessDenied());
+  yield put(actions.loading({loading:true}))
   try {
     const request = {
       token,
@@ -28,6 +29,7 @@ function * filterOffers(action){
       }
     }));
   }
+  yield put(actions.loading({loading:false}))
 }
 
 function * getOffers(action){
@@ -41,6 +43,7 @@ function * getOffers(action){
   let token = state.token;
   if(!token)
     return yield put(actions.accessDenied());
+  yield put(actions.loading({loading:true}))
   try {
     const request = {
       token,
@@ -60,6 +63,7 @@ function * getOffers(action){
       }
     }));
   }
+  yield put(actions.loading({loading:false}))
 }
 
 function * onFilterChange (){
@@ -84,6 +88,7 @@ function * requestComparableBounds (){
     return yield put(actions.accessDenied());
   if(!context.comparable)
     context = (yield takeLatest('GET_CONTEXT_RESPONSE')).payload.context;
+  yield put(actions.loading({loading:true}))
   try {
     const request  = { 
       token,
@@ -117,15 +122,18 @@ function * requestComparableBounds (){
       }
     }));
   }
+  yield put(actions.loading({loading:false}))
 }
 function * onRequestComparableBounds (){
   yield* takeLatest('REQUEST_COMPARABLE_BOUNDS', requestComparableBounds);
 }
 
+
 function * getContext (){
   let token = (yield select()).cian.token;
   if(!token)
     return yield put(actions.accessDenied());
+  yield put(actions.loading({loading:true}))
   try {
     const request = { token }
     const response = yield call(CianApi.getContext, request);
@@ -149,6 +157,73 @@ function * getContext (){
       }
     }));
   }
+  yield put(actions.loading({loading:false}))
+}
+
+function * updateContext (){
+  let {context,token} = (yield select()).cian;
+  if(!token)
+    return yield put(actions.accessDenied());
+  yield put(actions.loading({loading:true}))
+  try {
+    const request = {
+      token,
+      context,
+    }
+    const response = yield call(CianApi.updateContext, request);
+    
+    if(response.error.type){
+      yield put(actions.addError({error:response.error}));
+    }
+  } catch (e) {
+    yield put(actions.addError({
+      error : {
+        type : "FETCH",
+        e,
+      }
+    }));
+  }
+  yield put(actions.loading({loading:false}))
+}
+function * changeFavorite (action){
+  yield put(actions.changeFavoriteOK(action.payload));
+  yield fork(updateContext);
+}
+
+function * onChangeFavorite (){
+  yield* takeLatest('CHANGE_FAVORITE', changeFavorite);
+}
+
+function * addOfferToReport (action){
+  let {token} = (yield select()).cian;
+  if(!token)
+    return yield put(actions.accessDenied());
+  yield put(actions.loading({loading:true}))
+  try {
+    const request = {
+      token,
+      offerID:action.payload.id,
+    }
+    const response = yield call(CianApi.addOfferToReport, request);
+    if(response.error.type){
+      yield put(actions.addError({error:response.error}));
+    }else {
+      yield put(actions.addOfferToReportOK(action.payload));
+      yield fork(updateContext);
+    }
+  } catch (e) {
+    yield put(actions.addError({
+      error : {
+        type : "FETCH",
+        e,
+      }
+    }));
+  }
+  yield put(actions.loading({loading:false}))
+}
+
+function * onAddOfferToReport (){
+  yield* takeLatest('ADD_OFFER_TO_REPORT', addOfferToReport);
 }
 
 function * firstInit (){
@@ -164,6 +239,8 @@ function * mySaga() {
   yield fork(TestCianApi)
   yield fork(onAddError)
   yield fork(firstInit)
+  yield fork(onChangeFavorite)
+  yield fork(onAddOfferToReport)
 }
 
 export default mySaga;

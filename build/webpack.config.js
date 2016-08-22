@@ -138,7 +138,7 @@ if (!__TEST__) {
 // JavaScript / JSON
 var babelSettings = {
   cacheDirectory: true,
-  presets: ['es2015-loose', 'react', 'stage-0'],
+  presets: ['es2015-loose','stage-0','react'],
   plugins: [
     //['transform-es3-member-expression-literals',{loose:false}],
     //['transform-es3-property-literals',{loose:false}],
@@ -146,8 +146,8 @@ var babelSettings = {
     //['transform-runtime',{loose:false}],
     //['transform-es2015-modules-commonjs', { "loose": false }],
     //['transform-es3-modules-literals', {loose:false}],
-    ['transform-promise-to-bluebird'],
     ["transform-decorators-legacy"],
+    ['transform-promise-to-bluebird'],
     ['transform-proto-to-assign'],
     ["transform-async-to-module-method", {
       "module": "bluebird",
@@ -202,6 +202,7 @@ if (config.compiler_css_modules) {
 const isUsingCSSModules = !!PATHS_TO_TREAT_AS_CSS_MODULES.length
 const cssModulesRegex = new RegExp(`(${PATHS_TO_TREAT_AS_CSS_MODULES.join('|')})`)
 
+
 // Loaders for styles that need to be treated as CSS modules.
 if (isUsingCSSModules) {
   const cssModulesLoader = [
@@ -214,6 +215,7 @@ if (isUsingCSSModules) {
   webpackConfig.module.loaders.push({
     test: /\.(scss|sass)$/,
     include: cssModulesRegex,
+    exclude: /\.var\.(scss|sass)$/,
     loaders: [
       'style',
       cssModulesLoader,
@@ -225,6 +227,7 @@ if (isUsingCSSModules) {
   webpackConfig.module.loaders.push({
     test: /\.css$/,
     include: cssModulesRegex,
+    exclude:  /\.var\.(scss|sass)$/,
     loaders: [
       'style',
       cssModulesLoader,
@@ -237,7 +240,7 @@ if (isUsingCSSModules) {
 const excludeCSSModules = isUsingCSSModules ? cssModulesRegex : false
 webpackConfig.module.loaders.push({
   test: /\.(scss|sass)$/,
-  exclude: excludeCSSModules,
+  exclude: [excludeCSSModules,/\.var\.(scss|sass)$/],
   loaders: [
     'style',
     BASE_CSS_LOADER,
@@ -247,12 +250,16 @@ webpackConfig.module.loaders.push({
 })
 webpackConfig.module.loaders.push({
   test: /\.css$/,
-  exclude: excludeCSSModules,
+  exclude: [excludeCSSModules,/\.var\.(scss|sass)$/],
   loaders: [
     'style',
     BASE_CSS_LOADER,
     'postcss'
   ]
+})
+webpackConfig.module.loaders.push({
+  test: /\.var\.(scss|sass)$/,
+  loaders: ['sass-variable-loader'],
 })
 
 // ------------------------------------

@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 
 
 import {Nano} from 'components'
-import {filterChange} from 'actions'
+import {filterChange,changeLayout} from 'actions'
 import s from './Filter.sass'
 
 import _set from "lodash/set"
@@ -14,11 +14,12 @@ import {Multiselect,FromTo,Checkbox,Words} from "components/fields"
 import {FilterToFields} from 'const/Cian'
 
 import Glyphicon from 'react-bootstrap/es/Glyphicon'
+import vars from 'styles/global.var.scss'
 
 
 @connect(({cian}) =>({
   filter : cian.filter,
-}), {filterChange})
+}), {filterChange,changeLayout})
 class Filter extends Component {
   constructor (props){
     super(props)
@@ -67,6 +68,15 @@ class Filter extends Component {
       </div>
     )
   }
+  toggle (){
+    this.setState({ open: !this.state.open })
+  }
+  matchLayout (){
+    if(this.state.open)
+      this.props.changeLayout({left:[+vars.filterWidth,this.refs.root.height()]})
+    else
+      this.props.changeLayout({left:[+vars.filterWidthMin,this.refs.root.height()]})
+  }
   render () {
     let fields = FilterToFields(this.props.filter)
     let form = [];
@@ -89,8 +99,8 @@ class Filter extends Component {
     
 
     return (
-      <Nano ref="root" byContent={true} className={s.root}>
-        <div className={s.title} onClick={ ()=> this.setState({ open: !this.state.open })}>
+      <Nano onChange={::this.matchLayout} ref="root" byContent={true} className={`${s.root} ${!this.state.open && s.close}`}>
+        <div className={s.title} onClick={::this.toggle}>
           <span className={s.title_text}>Фильтр</span>
           { this.state.open ? <Glyphicon className={s.glyph} glyph="menu-down"  />
                             : <Glyphicon className={s.glyph} glyph="menu-right" /> }

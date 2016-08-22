@@ -41,3 +41,37 @@
     background : #5e8bad
   &.active
     background : #3e6b8d
+
+
+.loader
+  float : right
+  height : $header-height*1px
+  width : $header-height*1px
+  padding : 10px
+  -webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -ms-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+  opacity : 0
+
+.loader.active
+  opacity : 0.8
+
+
+
+@media all\0 
+  .loader
+    display : none
+  .loader.active
+    display : block
+@media all and (monochrome:0)
+  .loader
+    display : block
+  .loader.active
+    display : block
+@media all and (-ms-high-contrast:none)
+  .loader
+    display : block
+  .loader.active
+    display : block

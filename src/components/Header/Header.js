@@ -1,9 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import {Link} from 'react-router'
+import {connect} from 'react-redux'
 
 import s from './Header.sass'
 
-
+@connect(({cian}) =>({
+  loading : cian.loading,
+}))
 class Header extends Component {
   render () {
     const links = [
@@ -18,6 +21,7 @@ class Header extends Component {
       <div className={s.root}>
         <Link className={s.logo} to="/">Банк Оценщик</Link>
         {links}
+        <img className={`${s.loader} ${this.props.loading? s.active:""}`} src="img/loader.gif"></img>
       </div>
     )
   }

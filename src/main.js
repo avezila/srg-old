@@ -13,9 +13,7 @@ import $ from 'jquery'
 global.$ = global.jQuery = $
 import "jQuery-ajaxTransport-XDomainRequest"
 
-
-
-
+import "lib/Pretty"
 
 $.ajaxSetup({
   cache: true

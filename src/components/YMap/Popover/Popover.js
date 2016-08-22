@@ -12,13 +12,21 @@ class Popover extends Component {
       <RBPopover
         className={s.root}
         placement="top"
-        title={title}
         id="popover-basic" >
-        <Nano className={s.content}>
-          {this.props.offers.map(o=>(
-            <OfferShort key={o.id} offer={o} />
-          ))}
-        </Nano>
+        <div className={s.block}>
+          <div className={s.header}>
+            <div className={s.title}>{title}</div>       
+            <div
+              className={s.remove}
+              to="/map"
+              onClick={this.props.onClose}>×</div>
+          </div>
+          <Nano className={s.content}>
+            {this.props.offers.map(o=>(
+              <OfferShort key={o.id} offer={o} />
+            ))}
+          </Nano>
+        </div>
       </RBPopover>
     )
   }

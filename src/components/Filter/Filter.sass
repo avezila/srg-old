@@ -2,11 +2,11 @@
 .root
   +isolate
   position: absolute
-  width : $filter-width
+  width : $filter-width*1px
 
-  left    : $gutter
-  top     : $gutter
-  bottom  : $gutter
+  left    : $gutter*1px
+  top     : $gutter*1px
+  bottom  : $gutter*1px
 
   z-index : 9
   +shadow
@@ -23,6 +23,8 @@
     border : none
 
 
+.root.close
+  width : $filter-width-min*1px
 
 .title
   padding : 0 15px

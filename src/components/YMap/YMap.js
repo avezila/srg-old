@@ -9,11 +9,11 @@ import s from './YMap.sass'
 
 import {BoundsScale,InBounds} from 'lib/Map'
 
+import vars from 'styles/global.var.scss'
 
 import Popover from "./Popover"
 
 const TimerDT = 300;
-
 
 
 function getXY (b,p,width,height){
@@ -33,6 +33,7 @@ function MoveCenter(center,b,dx,dy,width,height){
   offerIDs    : cian.offerIDs,
   comparable  : cian.context.comparable,
   enviroment  : cian.context.enviroment,
+  layout      : cian.layout,
 }),{requestComparableBounds,changeContext})
 class YMap extends Component {
   constructor (props){
@@ -49,15 +50,50 @@ class YMap extends Component {
     let height = $(this.refs.map).height();
     let bounds = this.map.getBounds();
     let [x,y] = getXY(bounds,coords,width,height)
-    let dx = 0, dy = 0;
-    if(y<50) dy = 50-y;
-    if(y>height-200-50)
-      dy = (height-200-50) - y;
-    if(x<(315+200+50))
-      dx = 315+200+50 - x;
-    if(x>(width-200-50-315))
-      dx = (width-200-50-315) - x;
- 
+    let dx = 0;
+    let dy = 0;
+
+    let lt  = this.props.layout;
+    let top,left,right,bottom;
+    let g = vars.gutter*2;
+    let l = x-vars.mapPopoverWidth/2-g;
+    let r = x+vars.mapPopoverWidth/2+g;
+    let t = height- y-vars.mapPopoverHeight-15-g;
+    let b = height -y + g;
+    
+    let p = [];
+    
+    if(l+dx < lt.left[0]){
+      if(t+dy<lt.left[1] && lt.left[0]-l<lt.left[1]-t)
+          dx = lt.left[0]-l;
+      else if (t+dy<lt.left[1])
+        p.push(lt.left[1]);
+    }
+    if(r+dx > width-lt.right[0]){
+      if(t+dy<lt.right[1] && (-width+lt.right[0]+r)<(lt.right[1]-t))
+        dx = width-lt.right[0]-r
+      else if (t+dy<lt.right[1])
+        p.push(lt.right[1]);
+    }
+    if(p.length){
+      p = Math.max(...p,lt.center[1])
+    
+      if(t<p) dy = p - t;
+      if(b+dy>height){
+        dy = height-b;
+        if(l+dx < lt.left[0])  dx = lt.left[0]-l;
+        if(r+dx > width-lt.right[0]) dx = width-lt.right[0]-r;
+      }
+    }
+    
+
+    if(t+dy<lt.center[1]) dy = lt.center[1]-t;
+    if(b+dy>height)  dy = height-b;
+    if(r+dx>width)   dx = width-r;
+    if(l+dx<0)       dx = -l;
+    
+    dy = -dy;
+
     if(dx || dy){
       let center = MoveCenter(this.map.getCenter(),bounds,dx,dy,width,height);
       setTimeout(function(){
@@ -119,20 +155,26 @@ class YMap extends Component {
     global.o = o;
     this.layout.superclass.build.call(o);
     let marks = [];
+    let pm = o.getData();
+    pm = pm.geoObject || pm.cluster;
+
     if(o.getData().properties.getAll().id){
       marks = [o.getData()];
     }else {
       marks = o.getData().properties.getAll().geoObjects
     }
     
-    
     let ids = marks.map(m=>m.properties.get("id"))
     
     let offers = ids.map(id=>this.props.offers[id]);
     
     this.moveToPopover(marks[0].geometry.getCoordinates())
+
     ReactDOM.unstable_renderSubtreeIntoContainer(this,(
-      <Popover offers={offers} />
+      <Popover 
+        offers={offers} 
+        onClose={()=> pm.balloon.close()}
+      />
     ), o.getElement());
   }
   boundschange (){

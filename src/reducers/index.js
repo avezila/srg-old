@@ -91,7 +91,7 @@ export const cian = handleActions({
     ...state,
     context : lmerge({},state.context,action.payload),
   }),
-  [actions.changeFavorite]: (state,action)=>({
+  [actions.changeFavoriteOK]: (state,action)=>({
     ...state,
     context : {
       ...state.context,
@@ -101,7 +101,7 @@ export const cian = handleActions({
       ].filter(id=>action.payload.favoriteIDs[id]!==false)),
     },
   }),
-  [actions.addOfferToReport]: (state,action)=>({
+  [actions.addOfferToReportOK]: (state,action)=>({
     ...state,
     context : {
       ...state.context,
@@ -114,6 +114,17 @@ export const cian = handleActions({
       },
     },
   }),
+  [actions.changeLayout]: (state,action)=>({
+    ...state,
+    layout:{
+      ...state.layout,
+      ...action.payload,
+    },
+  }),
+  [actions.loading]: (state,action)=>({
+    ...state,
+    loading : action.payload.loading,
+  }),
 }, {
   filter    : Filter(),
   context   : {
@@ -122,4 +133,10 @@ export const cian = handleActions({
   offers    : {},
   offerIDs  : [],
   errors    : [],
+  layout    : {
+    left  : [300,1000],
+    right : [400,1000],
+    center: [0, 0],
+  },
+  loading : false,
 });

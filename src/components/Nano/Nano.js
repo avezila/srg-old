@@ -20,6 +20,7 @@ class Nano extends Component {
     }
     await Promise.delay(0)
     $(this.refs.nano).nanoScroller();
+    this.onChange()
 
     if(!flush){
       await Promise.delay(100)
@@ -45,6 +46,15 @@ class Nano extends Component {
   }
   update (){
     this.nano()
+  }
+  height (){
+    return $(this.refs.root).outerHeight();
+  }
+  onChange (){
+    let h = this.height()
+    if(h == this._height) return;
+    this._height = h;
+    this.props.onChange && this.props.onChange();
   }
   render () {
     return (
