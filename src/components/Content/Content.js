@@ -1,67 +1,71 @@
 import React, { Component, PropTypes } from 'react'
 import {connect} from 'react-redux'
+import {Link} from 'react-router'
 
-import {Nano} from 'components'
+import {Nano, OfferFull} from 'components'
+import Table from './Table'
+import {changeLayout,tableScroll} from 'actions'
+import vars from 'styles/global.var.scss'
+import Timeout from 'lib/Timeout'
+
 import s from './Content.sass'
 
-import {Link,Route} from 'react-router'
 
-import Table from './Table'
-import {OfferFull} from 'components'
-import {changeLayout,tableScroll} from 'actions'
-
-import vars from 'styles/global.var.scss'
-
-const TimerDT = 500;
-
+export default
 @connect(({router,cian})=>({
-  pathname : router.location.pathname,
-  layout : cian.layout,
-  scroll : cian.tableScroll
+  pathname  : router.location.pathname,
+  layout    : cian.layout,
+  scroll    : cian.tableScroll
 }),{changeLayout,tableScroll})
 class Content extends Component {
+  static propTypes = {
+    pathname      : PropTypes.string.isRequired,
+    layout        : PropTypes.object.isRequired,
+    scroll        : PropTypes.number.isRequired,
+    changeLayout  : PropTypes.func.isRequired,
+    tableScroll   : PropTypes.func.isRequired,
+  }
   update (){
     this.refs.nano.update();
   }
+  onChange (){
+    if(!this.refs.nano) return;
+    this.props.changeLayout({center:[0,this.refs.nano.height()]});
+  }
+  onScroll (){
+    Timeout(this.timeout,null,500,false)
+  }
+  timeout =  ()=> {
+    this.props.tableScroll({scroll:this.refs.nano.scrollTop()});
+  }
+
   componentWillUnmount (){
     this.props.changeLayout({center:[0,0]});
   }
-  onChange (){
-    if(!this.refs.nano)return;
-    this.props.changeLayout({center:[0,this.refs.nano.height()]});
-  }
-
-  onScroll (){
-    if(!this.timer){
-      this.time = new Date().getTime();
-      this.timer = setTimeout(::this.onTimer,TimerDT);
-    }
-  }
-  onTimer (){
-    let time = new Date().getTime();
-    let dt = time - this.time;
-    if(dt<TimerDT)
-      return this.timer = setTimeout(::this.onTimer,TimerDT-dt)
-    this.timer = undefined;
-    this.props.tableScroll({scroll:this.refs.nano.scrollTop()})
-  }
   render () {
-    let {left,right} = this.props.layout;
+    let {left, right} = this.props.layout;
+    let {pathname, scroll}   = this.props;
     let style = {
-      left  : left[0]+vars.gutter*2,
+      left  : left [0]+vars.gutter*2,
       right : right[0]+vars.gutter*2,
     }
     return (
-      <Nano onScroll={::this.onScroll} onChange={::this.onChange} ref="nano" byContent={true} className={s.root} style={style}>
+      <Nano
+        onScroll={::this.onScroll}
+        onChange={::this.onChange}
+        ref="nano"
+        byContent={true}
+        className={s.root}
+        style={style}>
+
         <Link className={s.remove} to="/map">×</Link>
         {
-          this.props.pathname.match('table')?  (<Table     scroll={this.props.scroll} ref="content" update={::this.update}/>) :
-          this.props.pathname.match('offer-')? (<OfferFull ref="content" update={::this.update}/>) : undefined
+          pathname.match('table')?
+            <Table scroll={scroll} update={::this.update} /> :
+          pathname.match('offer-')? 
+            <OfferFull update={::this.update} /> : null
         }
       </Nano>
     )
   }
 }
-//<Route path="/table"   component={Table} />
-
-export default Content

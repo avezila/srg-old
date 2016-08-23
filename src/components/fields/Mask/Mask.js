@@ -1,10 +1,19 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
-import FormControl from "react-bootstrap/es/FormControl"
 
-const TimerDT = 200;
+import Timeout from 'lib/Timeout'
 
+
+export default
 class Mask extends Component {
+  static propTypes = {
+    value   : PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+    type     : PropTypes.string.isRequired,
+    onChange : PropTypes.func.isRequired, 
+  }
   constructor (props){
     super(props)
     this.state = {
@@ -67,7 +76,6 @@ class Mask extends Component {
     return +text;
   }  
   onInput (e){
-    //console.log(e.target.input.value,this.refs.input.value)
     this.edit = true;
     let input = e.target;
     let ereplace = this.editReplace(input.value);
@@ -103,17 +111,10 @@ class Mask extends Component {
   }
 
   onChange (value) {
-    this.time = new Date().getTime();
-    if(!this.timer)
-      this.timer = setTimeout(::this.onTimer,TimerDT);
+    Timeout(this.timeout,500)
   }
 
-  onTimer (){
-    let time = new Date().getTime();
-    let dt = time-this.time;
-    if(dt<TimerDT)
-      return this.timer = setTimeout(::this.onTimer,TimerDT-dt);
-    this.timer = undefined;
+  timeout = ()=>{
     this.props.onChange(this.fromText(this.state.value));
   }
  
@@ -130,5 +131,3 @@ class Mask extends Component {
     )
   }
 }
-
-export default Mask

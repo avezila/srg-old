@@ -1,11 +1,17 @@
 import React, { Component, PropTypes } from 'react'
 import RBCheckbox from "react-bootstrap/es/Checkbox"
 
+import Timeout from 'lib/Timeout'
+
 import s from "./Checkbox.sass"
 
-const TimerDT = 200;
 
+export default
 class Checkbox extends Component {
+  static propTypes = {
+    value     : PropTypes.object.isRequired,
+    onChange  : PropTypes.func.isRequired,
+  }
   constructor (props){
     super(props)
     this.state = {
@@ -16,16 +22,9 @@ class Checkbox extends Component {
     this.setState({
       value : e.target.checked == true,
     });
-    this.time = new Date().getTime();
-    if(!this.timer)
-      this.timer = setTimeout(::this.onTimer,TimerDT);
+    Timeout(this.timeout)
   }
-  onTimer (){
-    let time = new Date().getTime();
-    let dt = time - this.time;
-    if(dt<TimerDT)
-      return this.timer = setTimeout(::this.onTimer,TimerDT-dt)
-    this.timer = undefined;
+  timeout = ()=>{
     this.props.onChange(this.state.value || undefined)
   }
   componentWillReceiveProps (props){
@@ -44,5 +43,3 @@ class Checkbox extends Component {
     )
   }
 }
-
-export default Checkbox

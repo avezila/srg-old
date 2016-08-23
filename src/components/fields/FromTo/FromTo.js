@@ -1,23 +1,24 @@
 import React, { Component, PropTypes } from 'react'
-import ReactDOM from 'react-dom'
 import FormGroup from "react-bootstrap/es/FormGroup"
 import InputGroup from "react-bootstrap/es/InputGroup"
+const Addon = InputGroup.Addon;
 
 import {Mask} from "components/fields"
-import s from "./FromTo.sass"
 import DateTimeField from 'react-bootstrap-datetimepicker'
-
 import "react-bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" 
+import Timeout from "lib/Timeout"
 
-let Addon = InputGroup.Addon
+import s from "./FromTo.sass"
 
 
 let to2 = s=> (""+s).length==1? "0"+s:s
 
-
-const TimerDT = 200;
-
+export default
 class FromTo extends Component {
+  static propsTypes = {
+    value     : PropTypes.object.isRequired,
+    onChange  : PropTypes.func.isRequired,
+  }
   constructor (props){
     super(props)
     this.state = {
@@ -39,20 +40,12 @@ class FromTo extends Component {
         [field] : text,
       }
     })
-
-    this.time = new Date().getTime();
-    if(!this.timer)
-      this.timer = setTimeout(::this.onTimer,TimerDT);
+    Timeout(this.timeout)
   }
-  onTimer (){
-    let time = new Date().getTime();
-    let dt = time - this.time;
-    if(dt<TimerDT)
-      return this.timer = setTimeout(::this.onTimer,TimerDT-dt)
-    this.timer = undefined;
+  timeout = ()=>{
     this.props.onChange(this.state.value)
   }
-  getInput (field,pref){
+  renderInput (field,pref){
     switch (this.props.value.type){
       case "input":
         return (
@@ -91,11 +84,9 @@ class FromTo extends Component {
   render () {
     return (
       <FormGroup className={s.form_group}>       
-        {this.getInput("from","от")}
-        {this.getInput("to","до")}
+        {this.renderInput("from","от")}
+        {this.renderInput("to","до")}
       </FormGroup>
     )
   }
 }
-
-export default FromTo

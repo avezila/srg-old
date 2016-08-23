@@ -1,24 +1,19 @@
 import React, { Component, PropTypes } from 'react'
 import RBMultiselect from 'react-bootstrap-multiselect'
 
+import Timeout from 'lib/Timeout'
 
-const TimerDT = 50;
 
+export default
 class Multiselect extends Component {
-  onChange (...args){
-    this.args = args;
-    this.time = new Date().getTime();
-    if(!this.timer)
-      this.timer = setTimeout(::this.onTimer,TimerDT);
+  static propTypes = {
+    value     : PropTypes.object.isRequired,
+    onChange  : PropTypes.func.isRequired,
   }
-  onTimer (){
-    let time = new Date().getTime();
-    let dt = time - this.time;
-    if(dt<TimerDT)
-      return this.timer = setTimeout(::this.onTimer,TimerDT-dt)
-    this.timer = undefined;
-    let [option, checked, select] = this.args;
-
+  onChange (){
+    Timeout(this.timeout,arguments,50);
+  }
+  timeout = (option, checked, select)=>{
     let fields = {};
     for (let obj of this.props.value.data)
       if(obj.selected)
@@ -38,7 +33,6 @@ class Multiselect extends Component {
         nSelectedText=" выбрано"
         allSelectedText="Все"
         numberDisplayed={2}
-        //{...this.props}
         data={this.props.value.data}
         onChange={::this.onChange}
         ref="select"
@@ -46,5 +40,3 @@ class Multiselect extends Component {
     )
   }
 }
-
-export default Multiselect
