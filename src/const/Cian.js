@@ -132,8 +132,8 @@ export const Offer = VMap("Offer",{
   sourceName  : String,
   sourceText  : String,
   price       : Int,
-  trusted       : Bool,
-  space         : Float,
+  trusted     : Bool,
+  space       : Float,
 })
 
 export const OfferCommercial = Map("OfferCommercial",{
@@ -295,7 +295,6 @@ export const FilterToFields = Type("FilterFields",(o)=> {
   o = Filter(o)
 
   return {
-    // Offer
     type  : {
       title : "Тип объекта",
       multiselect : {
@@ -303,11 +302,18 @@ export const FilterToFields = Type("FilterFields",(o)=> {
       }
     },
     realtyType  : {
-      title : "Подтип объекта",
+      //title : "Подтип объекта",
       multiselect : {
         data : multiselectFromMEnum(RealtyTypeFilter(o.type),o.realtyType),
       },
       hide : o.type.indexOf("FLAT")<0 && o.type.indexOf("COMMERCIAL")<0,
+    },
+    date : {
+      title : "Дата объявления",
+      fromto : {
+        data    : o.date,
+        type : "date", 
+      }
     },
     price : {
       title : "Цена, руб.",
@@ -317,24 +323,20 @@ export const FilterToFields = Type("FilterFields",(o)=> {
         pattern : 'int',
       }
     },
-    photoRequired : {
-      checkbox : {
-        title : "Только с фото",
-        data : o.photoRequired,
-      }
-    },
-    date : {
-      title : "Дата объявления",
+    pricePerMeter : {
+      title : "Цена за метр, руб.",
       fromto : {
-        data    : o.date,
-        type : "date", 
+        data    : o.pricePerMeter,
+        type : "input",
+        pattern : 'int',
       }
     },
-    sources : {
-      title : "Источник объявления",
+    contractType : {
+      title : "Тип договора",
       multiselect : {
-        data : multiselectFromMEnum(SourcesType,o.sources),
-      }
+        data : multiselectFromMEnum(ContractType,o.contractType), 
+      },
+      hide : o.type.indexOf("COMMERCIAL")<0,
     },
     space : {
       title : "Общая площадь, м.кв.",
@@ -344,7 +346,40 @@ export const FilterToFields = Type("FilterFields",(o)=> {
         pattern : 'meter',
       }
     },
-    // Commercial or Flat
+    living : {
+      title : "Жилая площадь, м.кв.",
+      fromto : {
+        data    : o.living,
+        type    : "input",
+        pattern : 'meter',
+      },
+      hide : o.type.indexOf("FLAT")<0,
+    },
+    kitchen : {
+      title : "Площадь кухни, м.кв.",
+      fromto : {
+        data    : o.kitchen,
+        type    : "input",
+        pattern : 'meter',
+      },
+      hide : o.type.indexOf("FLAT")<0,
+    },
+    rooms : {
+      title : "Количество комнат",
+      fromto : {
+        data    : o.rooms,
+        type    : "input",
+        pattern : 'int',
+      },
+      hide : o.type.indexOf("FLAT")<0 && o.type.indexOf("COMMERCIAL")<0,
+    },
+    furniture : {
+      checkbox : {
+        title : "Наличие мебели",
+        data : o.furniture,
+      },
+      hide : o.type.indexOf("COMMERCIAL")<0,
+    },
     floor : {
       title : "Этаж",
       fromto : {
@@ -377,16 +412,13 @@ export const FilterToFields = Type("FilterFields",(o)=> {
       },
       hide : o.type.indexOf("FLAT")<0 && o.type.indexOf("COMMERCIAL")<0,
     },
-    rooms : {
-      title : "Количество комнат",
-      fromto : {
-        data    : o.rooms,
-        type    : "input",
-        pattern : 'int',
+    wallsType : {
+      title : "Тип дома",
+      multiselect : {
+        data : multiselectFromMEnum(WallsType,o.wallsType), 
       },
-      hide : o.type.indexOf("FLAT")<0 && o.type.indexOf("COMMERCIAL")<0,
+      hide : o.type.indexOf("FLAT")<0,
     },
-    // Commercial
     entryType : {
       title : "Тип объекта",
       multiselect : {
@@ -408,26 +440,24 @@ export const FilterToFields = Type("FilterFields",(o)=> {
       },
       hide : o.type.indexOf("COMMERCIAL")<0,
     },
-    furniture : {
-      checkbox : {
-        title : "Наличие мебели",
-        data : o.furniture,
-      },
-      hide : o.type.indexOf("COMMERCIAL")<0,
-    },
-    contractType : {
-      title : "Тип договора",
-      multiselect : {
-        data : multiselectFromMEnum(ContractType,o.contractType), 
-      },
-      hide : o.type.indexOf("COMMERCIAL")<0,
-    },
     line : {
       title : "Линия домов",
       multiselect : {
         data : multiselectFromMEnum(LineType,o.line),
       },
       hide : o.type.indexOf("COMMERCIAL")<0,
+    },
+    sources : {
+      title : "Источник объявления",
+      multiselect : {
+        data : multiselectFromMEnum(SourcesType,o.sources),
+      }
+    },
+    photoRequired : {
+      checkbox : {
+        title : "Только с фото",
+        data : o.photoRequired,
+      }
     },
     include : {
       title : "Только со словами",
@@ -442,40 +472,6 @@ export const FilterToFields = Type("FilterFields",(o)=> {
         data : o.exclude,
       },
       hide : o.type.indexOf("COMMERCIAL")<0,
-    },
-    // Flat
-    wallsType : {
-      title : "Тип дома",
-      multiselect : {
-        data : multiselectFromMEnum(WallsType,o.wallsType), 
-      },
-      hide : o.type.indexOf("FLAT")<0,
-    },
-    living : {
-      title : "Жилая площадь, м.кв.",
-      fromto : {
-        data    : o.living,
-        type    : "input",
-        pattern : 'meter',
-      },
-      hide : o.type.indexOf("FLAT")<0,
-    },
-    kitchen : {
-      title : "Площадь кухни, м.кв.",
-      fromto : {
-        data    : o.kitchen,
-        type    : "input",
-        pattern : 'meter',
-      },
-      hide : o.type.indexOf("FLAT")<0,
-    },
-    pricePerMeter : {
-      title : "Цена за метр, руб.",
-      fromto : {
-        data    : o.pricePerMeter,
-        type : "input",
-        pattern : 'int',
-      }
     },
   }
 });

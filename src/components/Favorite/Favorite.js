@@ -22,6 +22,7 @@ class Favorite extends Component {
     this.setState({ open: !this.state.open })
   }
   matchLayout (){
+    if(!this.refs.root)return;
     if(this.state.open)
       this.props.changeLayout({right:[+vars.favoriteWidth,this.refs.root.height()]})
     else

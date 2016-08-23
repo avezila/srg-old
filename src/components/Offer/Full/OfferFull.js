@@ -14,20 +14,75 @@ import * as Cian from "const/Cian"
   addedOfferIDs : cian.context.enviroment&&cian.context.enviroment.addedOfferIDs,
   id     : router.params.splat,
   offers : cian.offers,
-}), {changeFavorite,addOfferToReport,goBack})
+}), {changeFavorite,addOfferToReport,goBack},null,{withRef:true})
 class OfferFull extends Component {
   componentDidUpdate (){
     this.props.update()
+  }
+  row (title,value){
+    if(!value) return null;
+    return (
+      <div key={title||value} className={s.row}>
+        <div className={s.row_title}>{title?title+":":""}</div>
+        <div className={s.row_value}>{value}</div>
+      </div>
+    )
   }
   render (){
     let {offers,id,favoriteIDs,changeFavorite,addedOfferIDs=[],addOfferToReport} = this.props;
     let offer =  offers[id];
     if(!offer)
       return <div className={s.root} />;
+    let rows = [];
+
+    rows.push(this.row("Тип объекта",Cian.OfferType.map(offer.type)));
+    rows.push(this.row("",Cian.RealtyType.map(offer.realtyType)));
+    if(offer.price)
+      rows.push(this.row("Цена",offer.price.toString().prettyInt()+"руб."));
+    if(offer.pricePerMeter)
+      rows.push(this.row("Цена за метр",offer.pricePerMeter.toString().prettyInt()+"руб."));
+    if(offer.contractType)
+      rows.push(this.row("Тип продажи",Cian.ContractType.map(offer.contractType)));
+
+    if(offer.space)
+      rows.push(this.row("Общая площадь", <span>{offer.space.toString().prettyFloat()+"м"}<sup>2</sup></span>));
+    if(offer.kitchen)
+      rows.push(this.row("Площадь кухни", <span>{offer.kitchen.toString().prettyFloat()+"м"}<sup>2</sup></span>));
+    if(offer.living)
+      rows.push(this.row("Жилая площадь", <span>{offer.living.toString().prettyFloat()+" м"}<sup>2</sup></span>));
+    if(offer.rooms)
+      rows.push(this.row("Количество комнат",offer.rooms));
+    if(offer.furniture != undefined)
+      rows.push(this.row("Мебель", offer.furniture ? "Есть":"Нет"));
+    if(offer.floor)
+      rows.push(this.row("Этаж",offer.floor));
+    if(offer.storeys.length)
+      rows.push(this.row("Этажей в строении",offer.storeys.join("-")));
+    
+    if(offer.wallsType)
+      rows.push(this.row("Тип стен",Cian.WallsType.map(offer.wallsType)));
+    if(offer.buildingType)
+      rows.push(this.row("Тип здания",Cian.BuildingType.map(offer.buildingType)));
+    if(offer.buildingClass)
+      rows.push(this.row("Класс здания",Cian.BuildingClass.map(offer.buildingClass)));
+      
+    if(offer.entryType)
+      rows.push(this.row("Вход",Cian.EntryType.map(offer.entryType)));
+    if(offer.line != undefined)
+      rows.push(this.row("Линия домов",offer.line));
+
+    if(offer.trusted != undefined)
+      rows.push(this.row("Проверенно",offer.trusted ? "Да":"Нет"));
+    rows.push(this.row("Источник объявления",offer.sourceText||offer.sourceName));
+    rows.push(this.row("Ссылка на объявление",<a target="_blank" href={offer.url} className={s.link}>{offer.url}</a>));
+    rows.push(this.row("Дата объявления",offer.date));
+
+
     return (
       <div className={s.root}>
-        <div className={s.title}>
-          <div className={s.hash}>
+        <div className={s.header}>
+          <div className={s.header_title}>{offer.rawAddress}</div>
+          <div className={s.header_buttons}>
             <Glyphicon 
               className={s.glyph+ ((favoriteIDs.indexOf(offer.id)<0)?"":" "+s.active) }
               onClick={()=> changeFavorite({
@@ -42,15 +97,10 @@ class OfferFull extends Component {
                 id : offer.id,
               })}
               glyph="plus"  />
-            <strong className={s.small+" "+s.id}>{"#"+offer.id}</strong>
+            <strong className={s.id}>{"#"+offer.id}</strong>
           </div>
-          <div className={s.big}>{offer.rawAddress}</div>
         </div>
-        <div className={s.row}>
-          <div className={s.small}>{Cian.OfferType.map(offer.type)}</div>
-          <div className={s.small}>{Cian.RealtyType.map(offer.realtyType)}</div>
-        </div>
-        <div className={s.remove} onClick={::this.props.goBack}>×</div>
+        <div className={s.rows}>{rows}</div>
       </div>
     )
   }

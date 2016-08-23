@@ -15,7 +15,7 @@ import * as Cian from 'const/Cian'
 class OfferShort extends Component {
   render (){
     let {offer,favoriteIDs,changeFavorite,addedOfferIDs=[],addOfferToReport} = this.props;
-    //offer.price = 13321123;
+    
     let cols = [];
     if(offer.rooms)
       cols.push(<div title="Количество комнат" key="rooms" className={s.rooms}>{`${offer.rooms}-комн.`}</div>)

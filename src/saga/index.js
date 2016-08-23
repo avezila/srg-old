@@ -166,9 +166,13 @@ function * updateContext (){
     return yield put(actions.accessDenied());
   yield put(actions.loading({loading:true}))
   try {
+    
     const request = {
       token,
-      context,
+      context : {
+        ...context,
+        enviroment : JSON.stringify(context.enviroment),
+      },
     }
     const response = yield call(CianApi.updateContext, request);
     

@@ -1,38 +1,39 @@
 .root
   +span(12 of 12)
-  padding : 0 10px
-  position : relative
-  line-height : 50px
+  position : absolute
+  left : 0
+  padding : 5px 10px
+  font-size : 0.9em
   &:hover
-    background : #EEE
- 
-.title
+    background : #f2f5f8
+
+.header
   +span(12 of 12)
+  padding : 0
   float : left
-  font-size : 20px
-  line-height : 40px
-  padding-bottom : 20px
-.hash
+  line-height : 14px
+
+.header_title
   float : left
-  width : 90px
-.big
+  padding : 0 5px
+  font-weight : 500
+  font-size : 13px
+
+.header_buttons
   float : left
-  padding : 0 10px
-  font-size : 17px
-.small
-  float : left
-  padding : 0 6px
-  font-size : 12px
 
 .glyph
-  float : right
-  line-height : 40px
-  font-size : 14px
+  float : left
+  line-height : 14px
+  font-size : 13px
   padding : 0 3px
-  color : #444
+  color : #888
   cursor : pointer
   &:hover
     color : #000
+    transform: scale(1.02)
+  &:active
+    transform: scale(0.95)
     
 .glyph_plus
   margin-top : -1px
@@ -40,10 +41,15 @@
 .glyph.active
   color : #FAA937
   &:hover
-    color : #FAA937
+    color : #fbc16f
  
 .id
-  float : right
+  float : left
+  padding : 0 4px
+  font-size : 10px
+  float : left
+  color : #aaa
+  line-height : 15px
   
 .background
   position : absolute
@@ -52,26 +58,40 @@
   right : 0
   bottom : 0
 
-.remove
-  position : absolute
-  top : -10px
-  right : 0px
-  cursor : pointer
-  font-size : 30px
-  width : 30px
-  text-align : center
-  box-sizing : content-box
-  line-height : 30px
-  opacity : 0.3
-  padding-top : 15px
-  padding-right : 15px
-  padding-left : 30px
-  padding-bottom : 30px
-  &:hover
-    opacity : 0.8
-  &:active
-    transform: scale(0.95)
+.col
+  float : left
+  padding : 0
+  width : 160px
+  &.wide
+    width : 180px
 
-  &,&:active,&:focus,&:hover
-    text-decoration : none
+.row
+  float : left 
+  width : 100%
+  line-height : 20px
+  //padding-bottom : 5px
+
+
+.row_title
+  float : left
+  width : 100%
+  padding : 0 5px
+  padding-top : 5px
+  color : #777
+  font-weight : 500
+
+.row_value
+  width : 100%
+  float : left
+  padding : 0 5px
+
+.right .row_title
+  width : 130px
+.right .row_value
+  width : auto
+  padding-top : 5px
+
+.link
+  float : left
+  &,&:hover,&:focus,&:active
     color : black

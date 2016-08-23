@@ -125,6 +125,10 @@ export const cian = handleActions({
     ...state,
     loading : action.payload.loading,
   }),
+  [actions.tableScroll]: (state,action)=>({
+    ...state,
+    tableScroll : action.payload.scroll,
+  }),
 }, {
   filter    : Filter(),
   context   : {
@@ -139,4 +143,5 @@ export const cian = handleActions({
     center: [0, 0],
   },
   loading : false,
+  tableScroll : 0,
 });

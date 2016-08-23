@@ -72,6 +72,7 @@ class Filter extends Component {
     this.setState({ open: !this.state.open })
   }
   matchLayout (){
+    if(!this.refs.root)return;
     if(this.state.open)
       this.props.changeLayout({left:[+vars.filterWidth,this.refs.root.height()]})
     else

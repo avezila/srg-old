@@ -4,14 +4,15 @@ import {connect} from 'react-redux'
 
 import s from './Header.sass'
 
-@connect(({cian}) =>({
+@connect(({cian,router}) =>({
   loading : cian.loading,
+  location : router.location, // for catch location updates
 }))
 class Header extends Component {
   render () {
     const links = [
       {pathname : '/map', display : "Карта"},
-      {pathname : '/table', display : "Таблица"},
+      {pathname : '/table', display : "Список"},
       {pathname : '/403', display : "403"},
       {pathname : '/404', display : "404"},
     ].map((l,i) =>

@@ -50,6 +50,9 @@ class Nano extends Component {
   height (){
     return $(this.refs.root).outerHeight();
   }
+  scrollTop(v){
+    return $(this.refs.content).scrollTop();
+  }
   onChange (){
     let h = this.height()
     if(h == this._height) return;
