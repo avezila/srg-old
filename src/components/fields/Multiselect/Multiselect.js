@@ -7,21 +7,27 @@ import Timeout from 'lib/Timeout'
 export default
 class Multiselect extends Component {
   static propTypes = {
-    value     : PropTypes.object.isRequired,
+    value     : PropTypes.shape({
+      data : PropTypes.array.isRequired,
+    }).isRequired,
     onChange  : PropTypes.func.isRequired,
   }
+  changed = [];
   onChange (){
-    Timeout(this.timeout,arguments,50);
+    this.changed.push(arguments);
+    Timeout(this.timeout,500);
   }
-  timeout = (option, checked, select)=>{
+  timeout = ()=>{
     let fields = {};
     for (let obj of this.props.value.data)
       if(obj.selected)
         fields[obj.value] = true;
-    if(checked)
-      fields[option.val()] = true
-    else
-      delete fields[option.val()]
+
+    for(let [option,checked,select] of this.changed)
+      if(checked) fields[option.val()] = true
+      else        delete fields[option.val()]
+    this.changed = [];
+
     fields = Object.keys(fields)
     this.props.onChange(fields)
   }

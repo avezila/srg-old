@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 
 import 'nanoscroller/bin/css/nanoscroller.css'
 import 'nanoscroller/bin/javascripts/jquery.nanoscroller.js'
+import Timeout from 'lib/Timeout'
 import s from './Nano.sass'
 
 
@@ -54,6 +55,9 @@ class Nano extends Component {
     return $(this.refs.content).scrollTop();
   }
   onChange (){
+    Timeout(this.timeout,null,500,false)
+  }
+  timeout = ()=> {
     let h = this.height()
     if(h == this._height) return;
     this._height = h;
@@ -61,7 +65,7 @@ class Nano extends Component {
   }
   render () {
     return (
-      <div {...this.props} ref="root" className={`${this.props.className||""} ${s.root}`}>
+      <div ref="root" onScroll={this.props.onScroll} style={this.props.style} className={`${this.props.className||""} ${s.root}`}>
         <div  ref="nano" className="nano">
           <div ref="content" className={s.content+" nano-content"}>
             <div ref="body" className={s.body}>

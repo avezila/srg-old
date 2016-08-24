@@ -240,11 +240,11 @@ function * mySaga() {
   yield fork(onRequestComparableBounds)
   yield fork(onFilterChange)
   yield fork(onFilterOffersResponse)
-  yield fork(TestCianApi)
   yield fork(onAddError)
   yield fork(firstInit)
   yield fork(onChangeFavorite)
   yield fork(onAddOfferToReport)
+  yield fork(TestCianApi)
 }
 
 export default mySaga;

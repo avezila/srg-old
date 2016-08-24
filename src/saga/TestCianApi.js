@@ -1,4 +1,5 @@
 import { call, put, fork } from 'redux-saga/effects'
+import {delay} from "redux-saga"
 
 import {addError} from 'actions'
 import {Context} from 'const/Cian'
@@ -38,6 +39,7 @@ function * CallApi (name){
 }
 
 export function * TestCianApi(){
+  yield call(delay, 5000)
   for(let name in CianApi){
     yield fork(CallApi,name)
   }

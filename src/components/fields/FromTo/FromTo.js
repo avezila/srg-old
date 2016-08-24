@@ -16,7 +16,10 @@ let to2 = s=> (""+s).length==1? "0"+s:s
 export default
 class FromTo extends Component {
   static propsTypes = {
-    value     : PropTypes.object.isRequired,
+    value     : PropTypes.shape({
+      from : PropTypes.string.isRequired,
+      to   : PropTypes.string.isRequired,
+    }).isRequired,
     onChange  : PropTypes.func.isRequired,
   }
   constructor (props){
